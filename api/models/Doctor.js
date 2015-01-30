@@ -49,6 +49,10 @@ module.exports = {
       type: 'string'
     },
 
+    speciality: {
+      type: 'string'
+    },
+
     toJSON: function() {
       var obj = this.toObject();
       delete obj.encryptedPassword;
