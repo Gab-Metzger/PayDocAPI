@@ -53,6 +53,7 @@ module.exports = {
             }
 
             doctor.role = 'doctor';
+            doctor.token = sailsTokenAuth.issueToken(doctor.id);
             return res.json(doctor);
           });
         });
@@ -73,6 +74,7 @@ module.exports = {
           }
 
           patient.role = 'patient';
+          patient.token = sailsTokenAuth.issueToken(patient.id);
           return res.json(patient);
         });
       }

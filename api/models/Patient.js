@@ -52,6 +52,7 @@ module.exports = {
     toJSON: function() {
       var obj = this.toObject();
       delete obj.encryptedPassword;
+      obj.token = sailsTokenAuth.issueToken(obj.id);
       return obj;
     }
 
