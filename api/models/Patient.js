@@ -31,13 +31,11 @@ module.exports = {
     },
 
     phone: {
-      type: 'string',
-      required: true
+      type: 'string'
     },
 
     address: {
-      type: 'string',
-      required: true
+      type: 'string'
     },
 
     encryptedPassword: {
