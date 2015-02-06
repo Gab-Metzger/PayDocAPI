@@ -30,6 +30,11 @@ module.exports.policies = {
   PatientController: {
     'create': true,
     '*': 'tokenAuth'
+  },
+
+  DoctorController:{
+    'create':true,
+    '*':'tokenAuth'
   }
 
 
