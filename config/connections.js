@@ -81,7 +81,7 @@ module.exports.connections = {
     user: process.env.PG_USER || 'gabrielmetzger',
     password: process.env.PG_MDP || '',
     database: process.env.PG_DB || 'paydoc'
-  }
+  },
 
 
 
@@ -90,5 +90,12 @@ module.exports.connections = {
   * More adapters: https://github.com/balderdashy/sails                      *
   *                                                                          *
   ***************************************************************************/
-
+  mandrillAdapter: {
+    adapter: 'sails-mandrill',
+    apiKey: process.env.MANDRILL_KEY || 'JlhyYIGu5EDZDSt1OBwfUg', // the api key for your mandrill account
+    from: {
+      name: 'PayDoc Manager',
+      email: 'contact@paydoc.com'
+    }
+  }
 };
