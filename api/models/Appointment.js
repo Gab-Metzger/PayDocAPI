@@ -15,14 +15,10 @@ module.exports = {
       required: true
     },
 
-    validated: {
-      type:'boolean',
-      defaultsTo: false
-    },
-
-    cancelled: {
-      type: 'boolean',
-      defaultsTo: false
+    state: {
+      type: 'string',
+      enum: ['pending', 'approved', 'denied'],
+      defaultsTo: 'pending'
     },
 
     patient:{
