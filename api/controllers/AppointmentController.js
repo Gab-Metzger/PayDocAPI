@@ -30,8 +30,6 @@ module.exports = {
          }
          ];
 
-
-
          Email.send({
           template: 'email-validation-d-un-rdv-paydoc',
           data: template_content,
@@ -39,41 +37,13 @@ module.exports = {
             name: appoint[0].patient.name,
             email: appoint[0].patient.email
           }],
-          subject: '[PayDoc] Confirmation de création de compte'
+          subject: '[PayDoc] Validation d\'un rendez-vous'
           },
            function optionalCallback (err) {
             if (err) return res.json(err);
             else return res.json(appoint);
          });
       });
-
-
-      /*var template_content = [
-        {
-          "FNAME": created.firstName
-        },
-        {
-          "EMAIL" : created.email
-        },
-        {
-          "PASSWORD": password
-        }
-      ];
-
-
-
-      Email.send({
-        template: 'email-la-cr-ation-du-compte-paydoc',
-        data: template_content,
-        to: [{
-          name: created.name,
-          email: created.email
-        }],
-        subject: '[PayDoc] Confirmation de création de compte'
-      }, function optionalCallback (err) {
-        if (err) return res.json(err);
-        else return res.json(created);
-      });*/
     });
   }
 

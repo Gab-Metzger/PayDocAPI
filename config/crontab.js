@@ -7,7 +7,7 @@ module.exports.crontab = {
    * so in the example below it will run every minute
    */
 
-  '10 * * * *': function(){
+  '* 6 * * *': function(){
     require('../crontab/mycooljob.js').run();
   }
 };
