@@ -13,7 +13,7 @@ module.exports = {
     var newAppointment = {
       startDate: params.startDate,
       patient: params.patient,
-      doctor: params.doctor,
+      doctor: params.doctor
     };
 
     Appointment.create(newAppointment).exec(function createCB(err,created){
@@ -21,8 +21,17 @@ module.exports = {
       if (err) return res.json(err);
 
 
-      Appointment.find({id: created.id}).populate('patient').exec(function found(err, appoint) {
+
+      Appointment.find({id: created.id}).populate('patient').populate('doctor').exec(function found(err, appoint) {
         if (err) return res.json(err);
+
+        Appointment.publishCreate({
+          id : created.id,
+          patient : created.patient,
+          startDate : created.startDate,
+          doctor: appoint[0].doctor,
+          state : appoint[0].state
+        })
 
         var template_content = [
          {
@@ -45,6 +54,28 @@ module.exports = {
          });
       });
     });
+  },
+
+  broadcast: function(req, res) {
+    console.log("Appel de la fonction broadcast")
+    var params = req.params.all();
+
+    var newAppointment = {
+      startDate: params.startDate,
+      doctor: params.doctor
+    };
+
+    Appointment.create(newAppointment).exec(function createCB(err, created) {
+      if (err) return res.json(err);
+      console.log(created)
+      Appointment.publishCreate({
+        id: created.id,
+        patient: created.patient,
+        startDate: created.startDate,
+        doctor: created.doctor
+      })
+      return res.json(created);
+    })
   }
 
 };

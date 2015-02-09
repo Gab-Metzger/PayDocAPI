@@ -22,8 +22,7 @@ module.exports = {
     },
 
     patient:{
-      model:'patient',
-      required: true
+      model:'patient'
     },
 
     doctor:{
