@@ -86,6 +86,97 @@ module.exports = {
   },
 
   getBroadcasted : function (req, res ){
+  console.log("Appel de la fonction getBroadcast")
+    var params = req.params.all();
+    var doctors = [];
+    var appointments = [];
+
+
+    Appointment.find({patient: params.patient, state : "approved"}).populate('doctor').exec(function(err,appoint){
+
+      for ( var i = 0 ; i < appoint.length; i++ ){
+        var trouve = false;
+        for ( var j = 0 ; j < doctors.length; j++){
+          if (doctors[j].id == appoint[i].doctor.id ) trouve = true;
+        }
+        if ( !trouve ) doctors[doctors.length] = appoint[i].doctor;
+      }
+
+
+      //async.forEach(doctors, function (item, callback){
+      //  console.log(item); // print the key
+      //  Appointment.find({doctor: item.id, patient: null}).exec(function(err, app){
+      //    for ( var z = 0 ; z < app.length ; z++ ){
+      //      appointments.push(app[z]);
+      //    }
+      //
+      //  })
+      //  callback(); // tell async that the iterator has completed
+      //
+      //}, function(err) {
+      //  console.log('iterating done');
+      //  console.log(appointments)
+      //});
+      async.each(doctors,
+        // 2nd param is the function that each item is passed to
+        function(item, callback){
+          // Call an asynchronous function, often a save() to DB
+          //item.someAsyncCall(function (){
+          //  // Async call is done, alert via callback
+          //  callback();
+          //});
+          Appointment.find({doctor: item.id, patient: null}).exec(function(err, app){
+                  for ( var z = 0 ; z < app.length ; z++ ){
+                    appointments.push(app[z]);
+                  }
+            callback();
+
+          })
+        },
+        // 3rd param is the function to call when everything's done
+        function(err){
+          // All tasks are done now
+          console.log(appointments);
+          if (err) return res.json(err);
+          else return res.json(appointments);
+        }
+      );
+
+
+      //async.series([
+      //  //Load user to get userId first
+      //  function(callback) {
+      //
+      //    async.forEach(doctors, function (item, callback){
+      //      console.log(item); // print the key
+      //      Appointment.find({doctor: item.id, patient: null}).exec(function(err, app){
+      //        for ( var z = 0 ; z < app.length ; z++ ){
+      //          appointments.push(app[z]);
+      //        }
+      //
+      //      })
+      //      callback(); // tell async that the iterator has completed
+      //
+      //    }, function(err) {
+      //      console.log('iterating done');
+      //
+      //    });
+      //    callback();
+      //  },
+      //  //Load posts (won't be called before task 1's "task callback" has been called)
+      //  function(callback) {
+      //      console.log(appointments);
+      //      callback();
+      //  }
+      //], function(err) { //This function gets called after the two tasks have called their "task callbacks"
+      //  console.log(appointments)
+      //  console.log("Finsih")
+      //});
+
+
+
+    })
+
 
   }
 
