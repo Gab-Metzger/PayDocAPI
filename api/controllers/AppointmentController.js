@@ -59,6 +59,20 @@ module.exports = {
   broadcast: function(req, res) {
     console.log("Appel de la fonction broadcast")
     var params = req.params.all();
+    var patients = [];
+    Appointment.find({doctor: params.doctor, state : "approved"}).populate('patient').exec(function (err, appoint){
+
+        for ( var i = 0 ; i < appoint.length; i++ ){
+            var trouve = false;
+            for ( var j = 0 ; j < patients.length; j++){
+                if (patients[j].id == appoint[i].patient.id ) trouve = true;
+            }
+            if ( !trouve ) patients[patients.length] = appoint[i].patient;
+        }
+        console.log(patients)
+
+        // TODO : Parcours tableau patients & envoie mail
+    })
 
     var newAppointment = {
       startDate: params.startDate,
@@ -67,15 +81,12 @@ module.exports = {
 
     Appointment.create(newAppointment).exec(function createCB(err, created) {
       if (err) return res.json(err);
-      console.log(created)
-      Appointment.publishCreate({
-        id: created.id,
-        patient: created.patient,
-        startDate: created.startDate,
-        doctor: created.doctor
-      })
       return res.json(created);
     })
+  },
+
+  getBroadcasted : function (req, res ){
+
   }
 
 };
