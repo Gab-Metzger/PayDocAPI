@@ -57,7 +57,6 @@ module.exports = {
   },
 
   broadcast: function(req, res) {
-    console.log("Appel de la fonction broadcast")
     var params = req.params.all();
     var patients = [];
     Appointment.find({doctor: params.doctor, state : "approved"}).populate('patient').exec(function (err, appoint){
@@ -69,10 +68,29 @@ module.exports = {
             }
             if ( !trouve ) patients[patients.length] = appoint[i].patient;
         }
-        console.log(patients)
 
-        // TODO : Parcours tableau patients & envoie mail
-    })
+        for (var i = 0; i < patients.length; i++) {
+          Email.send({
+              template: 'email-proposition-de-rendez-vous',
+              data: [
+                {
+                  "FNAME": patients[i].firstName
+                }
+              ],
+              to: [{
+                name: patients[i].name,
+                email: patients[i].email
+              }],
+              subject: '[PayDoc] Profitez d\'une annulation chez votre médecin'
+            },
+            function optionalCallback (err) {
+              if (err) return res.json(err);
+              console.log('Broadcast - Mail n°'+i+' sent !');
+            });
+        }
+
+        return res.json(patients);
+    });
 
     var newAppointment = {
       startDate: params.startDate,
@@ -86,7 +104,6 @@ module.exports = {
   },
 
   getBroadcasted : function (req, res ){
-  console.log("Appel de la fonction getBroadcast")
     var params = req.params.all();
     var doctors = [];
     var appointments = [];
@@ -102,30 +119,11 @@ module.exports = {
         if ( !trouve ) doctors[doctors.length] = appoint[i].doctor;
       }
 
-
-      //async.forEach(doctors, function (item, callback){
-      //  console.log(item); // print the key
-      //  Appointment.find({doctor: item.id, patient: null}).exec(function(err, app){
-      //    for ( var z = 0 ; z < app.length ; z++ ){
-      //      appointments.push(app[z]);
-      //    }
-      //
-      //  })
-      //  callback(); // tell async that the iterator has completed
-      //
-      //}, function(err) {
-      //  console.log('iterating done');
-      //  console.log(appointments)
-      //});
       async.each(doctors,
         // 2nd param is the function that each item is passed to
         function(item, callback){
-          // Call an asynchronous function, often a save() to DB
-          //item.someAsyncCall(function (){
-          //  // Async call is done, alert via callback
-          //  callback();
-          //});
-          Appointment.find({doctor: item.id, patient: null}).exec(function(err, app){
+
+          Appointment.find({doctor: item.id, patient: null}).populate('doctor').exec(function(err, app){
                   for ( var z = 0 ; z < app.length ; z++ ){
                     appointments.push(app[z]);
                   }
@@ -142,42 +140,8 @@ module.exports = {
         }
       );
 
-
-      //async.series([
-      //  //Load user to get userId first
-      //  function(callback) {
-      //
-      //    async.forEach(doctors, function (item, callback){
-      //      console.log(item); // print the key
-      //      Appointment.find({doctor: item.id, patient: null}).exec(function(err, app){
-      //        for ( var z = 0 ; z < app.length ; z++ ){
-      //          appointments.push(app[z]);
-      //        }
-      //
-      //      })
-      //      callback(); // tell async that the iterator has completed
-      //
-      //    }, function(err) {
-      //      console.log('iterating done');
-      //
-      //    });
-      //    callback();
-      //  },
-      //  //Load posts (won't be called before task 1's "task callback" has been called)
-      //  function(callback) {
-      //      console.log(appointments);
-      //      callback();
-      //  }
-      //], function(err) { //This function gets called after the two tasks have called their "task callbacks"
-      //  console.log(appointments)
-      //  console.log("Finsih")
-      //});
-
-
-
     })
-
-
+    
   }
 
 };
