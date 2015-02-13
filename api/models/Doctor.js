@@ -27,7 +27,8 @@ module.exports = {
 
     email: {
       type: 'string',
-      required: true
+      required: true,
+      unique: true
     },
 
     phone: {
@@ -51,6 +52,11 @@ module.exports = {
 
     speciality: {
       type: 'string'
+    },
+
+    nbValidated: {
+      type: 'integer',
+      defaultsTo: 0
     },
 
     toJSON: function() {

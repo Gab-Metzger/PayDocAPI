@@ -27,7 +27,8 @@ module.exports = {
 
     email: {
       type: 'string',
-      required: true
+      required: true,
+      unique: true
     },
 
     phone: {
@@ -40,6 +41,14 @@ module.exports = {
 
     encryptedPassword: {
       type: 'string'
+    },
+
+    resetPasswordToken: {
+      type: 'string'
+    },
+
+    resetPasswordExpires: {
+      type: 'datetime'
     },
 
     appointments:{

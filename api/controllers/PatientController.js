@@ -51,6 +51,53 @@ module.exports = {
         else return res.json(created);
       });
     });
+  },
+
+  forgot: function(req, res) {
+    async.waterfall([
+      function(done) {
+        crypto.randomBytes(20, function(err, buf) {
+          var token = buf.toString('hex');
+          done(err, token);
+        });
+      },
+      function(token, done) {
+        Patient.findOne({ email: req.params('email') }, function(err, user) {
+          if (!user) {
+            return res.json({error: 'No account with that email address exists.'});
+          }
+
+          user.resetPasswordToken = token;
+          user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
+
+          user.save(function(err) {
+            done(err, token, user);
+          });
+        });
+      },
+      function(token, user, done) {
+        // Send the mail with url + param token
+
+        Email.send({
+          template: 'email-la-cr-ation-du-compte-paydoc',
+          data: [{
+            'FNAME': user.firstName
+          }],
+          to: [{
+            name: user.name,
+            email: user.email
+          }],
+          subject: '[PayDoc] Réinitialisation de votre mot de passe'
+        }, function optionalCallback (err) {
+          if (err) return res.json(err);
+          else return res.json(created);
+        });
+
+        // End with done(err, 'done')
+      }
+    ], function(err) {
+      if (err) return next(err);
+    });
   }
 
 };
