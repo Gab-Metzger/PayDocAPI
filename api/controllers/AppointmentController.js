@@ -89,7 +89,7 @@ module.exports = {
             });
         }
 
-        return res.json(patients);
+        //return res.json(patients);
     });
 
     var newAppointment = {
@@ -98,6 +98,12 @@ module.exports = {
     };
 
     Appointment.create(newAppointment).exec(function createCB(err, created) {
+      if (req.isSocket){
+        console.log("C'est une requete")
+        Appointment.find({}).exec(function(e,listOfApp){
+          Appointment.subscribe(req.socket,listOfApp);
+        });
+      }
       if (err) return res.json(err);
       return res.json(created);
     })
@@ -109,7 +115,7 @@ module.exports = {
     var appointments = [];
 
 
-    Appointment.find({patient: params.patient, state : "approved"}).populate('doctor').exec(function(err,appoint){
+    Appointment.find({patient: params.patient, state : "approved", startDate : {">": new Date().toISOString() } }).populate('doctor').exec(function(err,appoint){
 
       for ( var i = 0 ; i < appoint.length; i++ ){
         var trouve = false;
@@ -153,6 +159,31 @@ module.exports = {
         return res.json(data);
       }
     })
+  },
+
+  chooseAppointment: function(req,res){
+    var params = req.params.all();
+    Appointment.update({id: params.id},{
+      patient : params.patient,
+      state : params.state
+    }).exec(function(err,data){
+      if (!err) {
+        Patient.find(params.patient).exec(function(err,patient){
+          Appointment.publishUpdate(data[0].id,{patient:patient[0],state:params.state});
+          return res.json(data)
+        })
+
+      } else res.json(err)
+    })
+  },
+
+  subscribeAppointment: function(req,res){
+    if (req.isSocket){
+      console.log("C'est une requete")
+      Appointment.find({}).exec(function(e,listOfApp){
+        Appointment.subscribe(req.socket,listOfApp);
+      });
+    }
   }
 
 };
