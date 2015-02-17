@@ -142,6 +142,17 @@ module.exports = {
 
     })
 
+  },
+
+  getBroadcastedHistory: function(req, res) {
+    var doctorId = req.param('id');
+
+    Appointment.find({doctor: doctorId, patient: null}).exec(function(err, data) {
+      if (err) res.json(err)
+      else {
+        return res.json(data);
+      }
+    })
   }
 
 };

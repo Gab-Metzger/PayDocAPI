@@ -59,6 +59,16 @@ module.exports = {
       defaultsTo: 0
     },
 
+    nbGiven: {
+      type: 'integer',
+      defaultsTo: 0
+    },
+
+    nbCancelled: {
+      type: 'integer',
+      defaultsTo: 0
+    },
+
     toJSON: function() {
       var obj = this.toObject();
       delete obj.encryptedPassword;
