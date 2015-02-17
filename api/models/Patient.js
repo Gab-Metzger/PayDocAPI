@@ -21,10 +21,6 @@ module.exports = {
       required: true
     },
 
-    name: {
-      type: 'string'
-    },
-
     email: {
       type: 'string',
       required: true,
@@ -59,6 +55,7 @@ module.exports = {
     toJSON: function() {
       var obj = this.toObject();
       delete obj.encryptedPassword;
+      obj.name = obj.lastName.toUpperCase() + ' ' + obj.firstName;
       obj.token = sailsTokenAuth.issueToken(obj.id);
       return obj;
     }
@@ -76,7 +73,6 @@ module.exports = {
       values.encryptedPassword = encryptedPassword;
       delete values.confirmation;
       // values.online= true;
-      values.name = values.lastName.toUpperCase() + ' ' + values.firstName;
       next();
     });
   },
@@ -91,14 +87,12 @@ module.exports = {
         if (err) return next(err);
         values.encryptedPassword = encryptedPassword;
         delete values.confirmation;
-        values.name = values.lastName.toUpperCase() + ' ' + values.firstName;
         next();
       });
     }
     else {
       delete values.password;
       delete values.confirmation;
-      values.name = values.lastName.toUpperCase() + ' ' + values.firstName;
       next();
     }
   }
