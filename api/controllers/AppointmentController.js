@@ -99,7 +99,6 @@ module.exports = {
 
     Appointment.create(newAppointment).exec(function createCB(err, created) {
       if (req.isSocket){
-        console.log("C'est une requete")
         Appointment.find({}).exec(function(e,listOfApp){
           Appointment.subscribe(req.socket,listOfApp);
         });
@@ -140,7 +139,6 @@ module.exports = {
         // 3rd param is the function to call when everything's done
         function(err){
           // All tasks are done now
-          console.log(appointments);
           if (err) return res.json(err);
           else return res.json(appointments);
         }
@@ -179,7 +177,6 @@ module.exports = {
 
   subscribeAppointment: function(req,res){
     if (req.isSocket){
-      console.log("C'est une requete")
       Appointment.find({}).exec(function(e,listOfApp){
         Appointment.subscribe(req.socket,listOfApp);
       });
