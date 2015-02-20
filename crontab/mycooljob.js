@@ -1,21 +1,22 @@
 module.exports = {
   run : function(){
     var nowDate = new Date();
-    var minDate = addDays(nowDate,3);
-    var maxDate = addDays(nowDate,4);
+    var minDate = addDays(nowDate,2);
+    var maxDate = addDays(nowDate,3);
+
+    console.log(minDate.toString());
 
     Appointment.find({state: 'approved', startDate: {'>=': minDate, '<=': maxDate}})
       .populate('patient')
       .exec(function found(err, data) {
         if (err) console.log(err);
-
         for (var i = 0; i < data.length; i++) {
           Email.send({
               template: 'email-rappel-du-rendez-vous',
               data: [{
                 'FNAME': data[i].patient.firstName
               },{
-                'DATERDV': data[i].startDate.format("dd/mm/yyyy à H'h'M")
+                'DATERDV': data[i].startDate.format("dd/mm/yyyy à H'h'MM")
               }],
               to: [{
                 name: data[i].patient.name,
@@ -28,7 +29,6 @@ module.exports = {
               console.log('Mail n°'+i+' sent !');
             });
         }
-        console.log('Done');
       })
   }
 };

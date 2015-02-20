@@ -7,33 +7,32 @@
 
 module.exports = {
 
-  account: function(req, res, next) {
-    var template_name = 'email-la-cr-ation-du-compte-paydoc';
-    var template_content = [{
-        name: "FNAME",
-        content: "Gabriel"
-    }];
-
-    var message = {
-      to: [{
-        name: req.param('name'),
-        email: req.param('email')
-      }],
-      subject: '[PayDoc] Confirmation de création de compte',
-    };
+  cancelGivenAppointment: function(req, res, next) {
+    var template_name = 'email-annulation-d-un-rdv-donn';
+    var template_content = [
+      {
+      "FNAME": req.param('firstName')
+      },
+      {
+        "DNAME": req.param('doctorName')
+      },
+      {
+        "RDVDATE": req.param('startDate')
+      }
+    ];
 
     Email.send({
-      template: 'email-la-cr-ation-du-compte-paydoc',
+      template: template_name,
       data: template_content,
       to: [{
         name: req.param('name'),
         email: req.param('email')
       }],
-      subject: '[PayDoc] Confirmation de création de compte'
+      subject: "[PayDoc] Annulation d'un rendez-vous PayDoc"
     }, function optionalCallback (err) {
           if (err) return res.json(err);
           else return res.json({
-            message: 'Le mail avec template est envoyé !'
+            message: 'Mail cancel given envoyé'
           });
     });
   }
