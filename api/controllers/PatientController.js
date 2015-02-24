@@ -5,6 +5,7 @@
  * @help        :: See http://links.sailsjs.org/docs/controllers
  */
 var generatePassword = require('password-generator');
+var crypto = require('crypto');
 
 module.exports = {
 
@@ -62,13 +63,14 @@ module.exports = {
         });
       },
       function(token, done) {
-        Patient.findOne({ email: req.params('email') }, function(err, user) {
+        Patient.findOne({ email: req.param('email') }, function(err, user) {
           if (!user) {
             return res.json({error: 'No account with that email address exists.'});
           }
 
           user.resetPasswordToken = token;
-          user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
+          user.resetPasswordExpires = new Date(); // 1 hour
+          user.resetPasswordExpires.addHour();
 
           user.save(function(err) {
             done(err, token, user);
@@ -79,10 +81,13 @@ module.exports = {
         // Send the mail with url + param token
 
         Email.send({
-          template: 'email-la-cr-ation-du-compte-paydoc',
+          template: 'email-mot-de-passe-oubli',
           data: [{
             'FNAME': user.firstName
-          }],
+          },
+            {
+              'UPDATEPWD': 'http://rdv.paydoc.fr/reset/'+token
+            }],
           to: [{
             name: user.name,
             email: user.email
@@ -90,13 +95,32 @@ module.exports = {
           subject: '[PayDoc] Réinitialisation de votre mot de passe'
         }, function optionalCallback (err) {
           if (err) return res.json(err);
-          else return res.json(created);
+          else return res.json({message: 'Le mail de réinitialisation à été envoyé !'});
         });
 
-        // End with done(err, 'done')
+        //done(user, 'done');
       }
     ], function(err) {
-      if (err) return next(err);
+      if (err) return res.json(err);
+    });
+  },
+
+  reset: function(req, res) {
+    Patient.findOne({ resetPasswordToken: req.param('token'), resetPasswordExpires: { '>=': new Date() } }, function(err, user) {
+      if (!user) {
+        console.log('No user found');
+        return res.json({error: 'Password reset token is invalid or has expired.'});
+      }
+
+      user.password = req.param('password');
+      user.confirmation = req.param('confirmation');
+      user.resetPasswordToken = undefined;
+      user.resetPasswordExpires = undefined;
+
+      user.save(function(err) {
+        if (err) return res.json({error: 'Error updating Patient password.'});
+        return res.json({message: 'Password Updated'});
+      });
     });
   }
 

@@ -29,12 +29,18 @@ module.exports.policies = {
   // '*': true,
   PatientController: {
     'create': true,
+    'forgot': true,
+    'reset': true,
     '*': 'tokenAuth'
   },
 
   DoctorController:{
     'create':true,
     '*':'tokenAuth'
+  },
+
+  AppointmentController: {
+    '*': true
   }
 
 

@@ -16,7 +16,7 @@ module.exports = {
               data: [{
                 'FNAME': data[i].patient.firstName
               },{
-                'DATERDV': data[i].startDate.format("dd/mm/yyyy à H'h'MM")
+                'DATERDV': data[i].startDate.format("dd/mm/yyyy à H'h'MM", true)
               }],
               to: [{
                 name: data[i].patient.name,
