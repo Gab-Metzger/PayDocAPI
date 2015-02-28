@@ -185,7 +185,8 @@ module.exports = {
 
   cancel: function(req, res) {
     Appointment.findOne({id : req.param('id')}).populate('patient').populate('doctor').exec(function(err, app) {
-      /*Email.send({
+      var appDate = new Date(app.startDate);
+      Email.send({
           template: 'email-annulation-d-un-rdv-donn',
           data: [
             {
@@ -195,7 +196,7 @@ module.exports = {
               "DNAME": app.doctor.lastName
             },
             {
-              "RDVDATE": app.startDate.format("dd/mm/yyyy à H'h'MM", true)
+              "RDVDATE": appDate.format("dd/mm/yyyy à H'h'MM", false)
             }
           ],
           to: [{
@@ -207,13 +208,7 @@ module.exports = {
         function optionalCallback (err) {
           if (err) return res.json(err);
           return res.json({message: 'Email sent'});
-        });*/
-
-      if (err) return res.json(err)
-      else {
-        return res.json({format: app.startDate.format("dd/mm/yyyy à H'h'MM", false), nonformat: app.startDate.toString()})
-      }
-
+        });
     })
   }
 

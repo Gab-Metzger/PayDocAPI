@@ -11,12 +11,13 @@ module.exports = {
       .exec(function found(err, data) {
         if (err) console.log(err);
         for (var i = 0; i < data.length; i++) {
+          var appDate = new Date(data[i].startDate);
           Email.send({
               template: 'email-rappel-du-rendez-vous',
               data: [{
                 'FNAME': data[i].patient.firstName
               },{
-                'DATERDV': data[i].startDate.format("dd/mm/yyyy à H'h'MM", true)
+                  'DATERDV': appDate.format("dd/mm/yyyy à H'h'MM", false)
               }],
               to: [{
                 name: data[i].patient.name,
