@@ -59,7 +59,7 @@ module.exports = {
   broadcast: function(req, res) {
     var params = req.params.all();
     var patients = [];
-    Appointment.find({doctor: params.doctor, state : "approved"}).populate('patient').exec(function (err, appoint){
+    Appointment.find({doctor: params.doctor, state : {'!': "denied"}}).populate('patient').exec(function (err, appoint){
 
         for ( var i = 0 ; i < appoint.length; i++ ){
             var trouve = false;
@@ -185,7 +185,7 @@ module.exports = {
 
   cancel: function(req, res) {
     Appointment.findOne({id : req.param('id')}).populate('patient').populate('doctor').exec(function(err, app) {
-      Email.send({
+      /*Email.send({
           template: 'email-annulation-d-un-rdv-donn',
           data: [
             {
@@ -207,7 +207,13 @@ module.exports = {
         function optionalCallback (err) {
           if (err) return res.json(err);
           return res.json({message: 'Email sent'});
-        });
+        });*/
+
+      if (err) return res.json(err)
+      else {
+        return res.json({format: app.startDate.format("dd/mm/yyyy à H'h'MM", false), nonformat: app.startDate.toString()})
+      }
+
     })
   }
 
