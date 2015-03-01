@@ -36,7 +36,10 @@ module.exports = {
         var template_content = [
          {
          "FNAME": appoint[0].patient.firstName
-         }
+         },
+          {
+            "DNAME": appoint[0].doctor.lastName
+          }
          ];
 
          Email.send({
@@ -66,7 +69,7 @@ module.exports = {
             for ( var j = 0 ; j < patients.length; j++){
                 if (patients[j].id == appoint[i].patient.id ) trouve = true;
             }
-            if ( !trouve ) patients[patients.length] = appoint[i].patient;
+            if ( !trouve && (appoint[i].patient.receiveBroadcast)) patients[patients.length] = appoint[i].patient;
         }
 
         for (var i = 0; i < patients.length; i++) {
@@ -75,6 +78,9 @@ module.exports = {
               data: [
                 {
                   "FNAME": patients[i].firstName
+                },
+                {
+                  "DNAME": patients[i].firstName
                 }
               ],
               to: [{

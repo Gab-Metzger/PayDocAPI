@@ -8,6 +8,7 @@ module.exports = {
 
     Appointment.find({state: 'approved', startDate: {'>=': minDate, '<=': maxDate}})
       .populate('patient')
+      .populate('doctor')
       .exec(function found(err, data) {
         if (err) console.log(err);
         for (var i = 0; i < data.length; i++) {
@@ -17,7 +18,9 @@ module.exports = {
               data: [{
                 'FNAME': data[i].patient.firstName
               },{
-                  'DATERDV': appDate.format("dd/mm/yyyy à H'h'MM", false)
+                  'DATERDV': appDate.format("dd/mm/yyyy", false)
+              },{
+                'DNAME': data[i].doctor.lastName
               }],
               to: [{
                 name: data[i].patient.name,

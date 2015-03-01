@@ -52,6 +52,11 @@ module.exports = {
       via: 'patient'
     },
 
+    receiveBroadcast: {
+      type: 'boolean',
+      defaultsTo: true
+    },
+
     toJSON: function() {
       var obj = this.toObject();
       delete obj.encryptedPassword;
