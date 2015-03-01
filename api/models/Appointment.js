@@ -28,6 +28,19 @@ module.exports = {
     doctor:{
       model:'doctor',
       required: true
+    },
+
+    toJSON: function() {
+      var obj = this.toObject();
+      obj.start = obj.startDate;
+      obj.end = new Date(obj.startDate.getTime() + 15*60000);
+      obj.title = obj.patient.name;
+      switch(obj.state) {
+        case 'pending'   :  obj.color = 'yellow';  break;
+        case 'approved':  obj.color = 'green';  break;
+        case 'denied'  :  obj.color = 'red';  break;
+      }
+      return obj;
     }
   }
 };
