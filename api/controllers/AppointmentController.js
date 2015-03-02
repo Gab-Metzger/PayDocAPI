@@ -63,13 +63,14 @@ module.exports = {
     var params = req.params.all();
     var patients = [];
     Appointment.find({doctor: params.doctor, state : {'!': "denied"}}).populate('patient').exec(function (err, appoint){
-
         for ( var i = 0 ; i < appoint.length; i++ ){
-            var trouve = false;
-            for ( var j = 0 ; j < patients.length; j++){
+            if (appoint[i].patient != undefined) {
+              var trouve = false;
+              for ( var j = 0 ; j < patients.length; j++){
                 if (patients[j].id == appoint[i].patient.id ) trouve = true;
+              }
+              if ( !trouve && (appoint[i].patient.receiveBroadcast)) patients[patients.length] = appoint[i].patient;
             }
-            if ( !trouve && (appoint[i].patient.receiveBroadcast)) patients[patients.length] = appoint[i].patient;
         }
 
         for (var i = 0; i < patients.length; i++) {
@@ -202,7 +203,7 @@ module.exports = {
               "DNAME": app.doctor.lastName
             },
             {
-              "RDVDATE": appDate.format("dd/mm/yyyy à H'h'MM", false)
+              "RDVDATE": appDate.format("dd/mm/yyyy", false)
             }
           ],
           to: [{
