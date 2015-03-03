@@ -34,12 +34,18 @@ module.exports = {
       var obj = this.toObject();
       obj.start = obj.startDate;
       obj.end = new Date(obj.startDate.getTime() + 15*60000);
-      obj.title = obj.patient.name;
+      if (obj.patient != undefined) {
+        obj.title = obj.patient.name;
+      }
+      else {
+        obj.title = "Rendez-vous proposé !";
+      }
       switch(obj.state) {
-        case 'pending'   :  obj.color = 'yellow';  break;
+        case 'pending'   :  obj.color = 'orange';  break;
         case 'approved':  obj.color = 'green';  break;
         case 'denied'  :  obj.color = 'red';  break;
       }
+      obj.allDay = false;
       return obj;
     }
   }
