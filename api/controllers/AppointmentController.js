@@ -62,14 +62,17 @@ module.exports = {
   broadcast: function(req, res) {
     var params = req.params.all();
     var patients = [];
-    Appointment.find({doctor: params.doctor, state : {'!': "denied"}}).populate('patient').exec(function (err, appoint){
+    Appointment.find({doctor: params.doctor, state : {'!': "denied"}}).populate('patient').populate('doctor').exec(function (err, appoint){
         for ( var i = 0 ; i < appoint.length; i++ ){
             if (appoint[i].patient != undefined) {
               var trouve = false;
               for ( var j = 0 ; j < patients.length; j++){
                 if (patients[j].id == appoint[i].patient.id ) trouve = true;
               }
-              if ( !trouve && (appoint[i].patient.receiveBroadcast)) patients[patients.length] = appoint[i].patient;
+              if ( !trouve && (appoint[i].patient.receiveBroadcast)) {
+                appoint[i].patient.dname = appoint[i].doctor.lastName;
+                patients[patients.length] = appoint[i].patient;
+              }
             }
         }
 
@@ -81,7 +84,7 @@ module.exports = {
                   "FNAME": patients[i].firstName
                 },
                 {
-                  "DNAME": patients[i].firstName
+                  "DNAME": patients[i].dname
                 }
               ],
               to: [{
