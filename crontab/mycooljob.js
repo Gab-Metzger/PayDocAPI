@@ -5,33 +5,37 @@ module.exports = {
     var maxDate = addDays(nowDate,3);
 
     console.log(minDate.toString());
+    console.log(maxDate.toString());
 
-    Appointment.find({state: 'approved', startDate: {'>=': minDate, '<=': maxDate}})
+    Appointment.find({state: {'!': 'denied'}, startDate: {'>=': minDate, '<=': maxDate}})
       .populate('patient')
       .populate('doctor')
       .exec(function found(err, data) {
         if (err) console.log(err);
         for (var i = 0; i < data.length; i++) {
-          var appDate = new Date(data[i].startDate);
-          Email.send({
-              template: 'email-rappel-du-rendez-vous',
-              data: [{
-                'FNAME': data[i].patient.firstName
-              },{
+          if (data[i].patient != undefined) {
+            var appDate = new Date(data[i].startDate);
+            Email.send({
+                template: 'email-rappel-du-rendez-vous',
+                data: [{
+                  'FNAME': data[i].patient.firstName
+                },{
                   'DATERDV': appDate.format("dd/mm/yyyy", false)
-              },{
-                'DNAME': data[i].doctor.lastName
-              }],
-              to: [{
-                name: data[i].patient.name,
-                email: data[i].patient.email
-              }],
-              subject: '[PayDoc] Rappel de rendez-vous'
-            },
-            function optionalCallback (err) {
-              if (err) return console.log(err);
-              console.log('Mail n°'+i+' sent !');
-            });
+                },{
+                  'DNAME': data[i].doctor.lastName
+                }],
+                to: [{
+                  name: data[i].patient.name,
+                  email: data[i].patient.email
+                }],
+                subject: '[PayDoc] Rappel de rendez-vous'
+              },
+              function optionalCallback (err) {
+                if (err) return console.log(err);
+                console.log('Mail n°'+i+' sent !');
+              });
+          }
+
         }
       })
   }
