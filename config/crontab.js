@@ -9,5 +9,9 @@ module.exports.crontab = {
 
   '0 6 * * *': function(){
     require('../crontab/mycooljob.js').run();
+  },
+
+  '0 6 * * *': function(){
+    require('../crontab/mycooljob.js').start();
   }
 };
