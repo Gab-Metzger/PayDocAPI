@@ -209,7 +209,7 @@ module.exports = {
               "DNAME": app.doctor.lastName
             },
             {
-              "RDVDATE": moment(appDate).format('LLLL')
+              "RDVDATE": moment(appDate).format('LL')
             }
           ],
           to: [{

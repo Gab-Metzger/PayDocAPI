@@ -23,7 +23,7 @@ module.exports = {
                 data: [{
                   'FNAME': data[i].patient.firstName
                 },{
-                  'DATERDV': moment(appDate).format('LLLL')
+                  'DATERDV': moment(appDate).format('LL')
                 },{
                   'DNAME': data[i].doctor.lastName
                 }],
@@ -41,34 +41,6 @@ module.exports = {
 
         }
       })
-  },
-
-  start : function() {
-    var nowDate = new Date();
-    var minDate = addDays(nowDate, 2);
-    var maxDate = addDays(nowDate, 3);
-
-    console.log(minDate.toString());
-    console.log(maxDate.toString());
-
-    Email.send({
-        template: 'email-rappel-du-rendez-vous',
-        data: [{
-          'FNAME': 'Gabriel'
-        }, {
-          'DATERDV': minDate.toString() + ' / ' + maxDate.toString()
-        }, {
-          'DNAME': 'Docteur Uribe'
-        }],
-        to: [{
-          name: 'Gabriel METZGER',
-          email: 'gab.metzger@gmail.com'
-        }],
-        subject: '[PayDoc] Rappel de rendez-vous'
-      },
-      function optionalCallback(err) {
-        if (err) return console.log(err);
-      });
   }
 };
 
