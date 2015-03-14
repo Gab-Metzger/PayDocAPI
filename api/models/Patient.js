@@ -27,6 +27,11 @@ module.exports = {
       unique: true
     },
 
+    mobilePhone: {
+      type: 'string',
+      required: true
+    },
+
     phone: {
       type: 'string'
     },

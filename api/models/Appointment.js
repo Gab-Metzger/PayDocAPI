@@ -10,7 +10,12 @@ module.exports = {
   schema: true,
 
   attributes: {
-    startDate: {
+    start: {
+      type:'datetime',
+      required: true
+    },
+
+    end: {
       type:'datetime',
       required: true
     },
@@ -32,19 +37,19 @@ module.exports = {
 
     toJSON: function() {
       var obj = this.toObject();
-      obj.start = obj.startDate;
-      obj.end = new Date(obj.startDate.getTime() + 15*60000);
-      if (obj.patient != undefined) {
-        obj.title = obj.patient.name;
-      }
-      else {
-        obj.title = "Rendez-vous proposé !";
-      }
       switch(obj.state) {
         case 'pending'   :  obj.color = 'orange';  break;
         case 'approved':  obj.color = 'green';  break;
         case 'denied'  :  obj.color = 'red';  break;
       }
+      if (obj.patient != undefined) {
+        obj.title = obj.patient.name;
+      }
+      else {
+        obj.title = "Rendez-vous proposé !";
+        obj.color = 'violet';
+      }
+
       obj.allDay = false;
       return obj;
     }
