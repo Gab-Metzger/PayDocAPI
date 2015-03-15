@@ -7,17 +7,14 @@ module.exports = {
     var minDate = addDays(nowDate,2);
     var maxDate = addDays(nowDate,3);
 
-    console.log(minDate.toString());
-    console.log(maxDate.toString());
-
-    Appointment.find({state: {'!': 'denied'}, startDate: {'>=': minDate, '<': maxDate}})
+    Appointment.find({state: {'!': 'denied'}, start: {'>=': minDate, '<': maxDate}})
       .populate('patient')
       .populate('doctor')
       .exec(function found(err, data) {
         if (err) console.log(err);
         for (var i = 0; i < data.length; i++) {
           if (data[i].patient != undefined) {
-            var appDate = new Date(data[i].startDate);
+            var appDate = new Date(data[i].start);
             Email.send({
                 template: 'email-rappel-du-rendez-vous',
                 data: [{
