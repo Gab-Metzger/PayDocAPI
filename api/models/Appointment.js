@@ -49,7 +49,6 @@ module.exports = {
         obj.title = "Rendez-vous proposé !";
         obj.color = 'violet';
       }
-
       obj.allDay = false;
       return obj;
     }
