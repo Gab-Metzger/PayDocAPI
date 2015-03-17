@@ -24,9 +24,7 @@ module.exports = {
 
       if (err) return res.json(err);
 
-
-
-      Appointment.find({id: created.id}).populate('patient').populate('doctor').exec(function found(err, appoint) {
+      Appointment.findOne(created.id).populate('patient').populate('doctor').exec(function found(err, appoint) {
         if (err) return res.json(err);
 
         Appointment.publishCreate({
@@ -34,32 +32,30 @@ module.exports = {
           patient : created.patient,
           start : created.start,
           end: created.end,
-          doctor: appoint[0].doctor,
-          state : appoint[0].state
+          doctor: appoint.doctor,
+          state : appoint.state
         })
 
-        var template_content = [
-         {
-         "FNAME": appoint[0].patient.firstName
-         },
-          {
-            "DNAME": appoint[0].doctor.lastName
-          }
-         ];
+        var email = appoint.patient.email;
 
-         Email.send({
-          template: 'email-validation-d-un-rdv-paydoc',
-          data: template_content,
-          to: [{
-            name: appoint[0].patient.name,
-            email: appoint[0].patient.email
-          }],
-          subject: '[PayDoc] Validation d\'un rendez-vous'
-          },
-           function optionalCallback (err) {
-            if (err) return res.json(err);
-            else return res.json(appoint);
-         });
+        if (email.indexOf("paydoc.fr") === -1) {
+          Email.send({
+              template: 'email-validation-d-un-rdv-paydoc',
+              data: [
+                {"FNAME": appoint.patient.firstName},
+                {"DNAME": appoint.doctor.lastName}
+              ],
+              to: [{
+                name: appoint.patient.name,
+                email: appoint.patient.email
+              }],
+              subject: '[PayDoc] Validation d\'un rendez-vous'
+            },
+            function optionalCallback (err) {
+              if (err) return res.json(err);
+              else return res.json(appoint);
+            });
+        }
       });
     });
   },

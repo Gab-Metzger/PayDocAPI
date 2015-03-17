@@ -28,8 +28,7 @@ module.exports = {
     },
 
     mobilePhone: {
-      type: 'string',
-      required: true
+      type: 'string'
     },
 
     phone: {
@@ -60,6 +59,10 @@ module.exports = {
     receiveBroadcast: {
       type: 'boolean',
       defaultsTo: true
+    },
+
+    notes: {
+      type:'text'
     },
 
     toJSON: function() {

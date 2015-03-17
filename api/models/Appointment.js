@@ -46,7 +46,7 @@ module.exports = {
         obj.title = obj.patient.name;
       }
       else {
-        obj.title = "Rendez-vous proposé !";
+        obj.title = "RdV proposé !";
         obj.color = 'violet';
       }
       obj.allDay = false;
