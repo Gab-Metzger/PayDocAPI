@@ -35,6 +35,10 @@ module.exports = {
       required: true
     },
 
+    notes: {
+      type:'text'
+    },
+
     toJSON: function() {
       var obj = this.toObject();
       switch(obj.state) {

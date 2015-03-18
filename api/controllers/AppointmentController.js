@@ -17,7 +17,8 @@ module.exports = {
       start: params.start,
       end: params.end,
       patient: params.patient,
-      doctor: params.doctor
+      doctor: params.doctor,
+      notes: params.notes
     };
 
     Appointment.create(newAppointment).exec(function createCB(err,created){
@@ -33,7 +34,8 @@ module.exports = {
           start : created.start,
           end: created.end,
           doctor: appoint.doctor,
-          state : appoint.state
+          state : appoint.state,
+          notes: appoint.notes
         })
 
         var email = appoint.patient.email;
@@ -55,6 +57,9 @@ module.exports = {
               if (err) return res.json(err);
               else return res.json(appoint);
             });
+        }
+        else {
+          return res.json(appoint);
         }
       });
     });

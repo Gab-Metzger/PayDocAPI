@@ -61,10 +61,6 @@ module.exports = {
       defaultsTo: true
     },
 
-    notes: {
-      type:'text'
-    },
-
     toJSON: function() {
       var obj = this.toObject();
       delete obj.encryptedPassword;

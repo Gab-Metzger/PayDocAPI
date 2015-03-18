@@ -20,7 +20,6 @@ module.exports = {
       mobilePhone: params.mobilePhone,
       phone: params.phone,
       address: params.address,
-      notes: params.notes,
       password: password,
       confirmation: password
     };
