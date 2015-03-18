@@ -10,6 +10,13 @@ moment.locale('fr');
 
 module.exports = {
 
+  getAppointmentsByDoctor: function(req, res) {
+    Appointment.find({doctor: req.param('id'), start: {'>': new Date()}}).populate('patient').exec(function got(appointments, err) {
+      if (err) return res.json(err)
+      else return res.json(appointments);
+    });
+  },
+
   create: function(req, res){
     var params = req.params.all();
 
@@ -202,6 +209,7 @@ module.exports = {
 
   cancel: function(req, res) {
     Appointment.findOne({id : req.param('id')}).populate('patient').populate('doctor').exec(function(err, app) {
+      console.log()
       var appDate = new Date(app.start);
       Email.send({
           template: 'email-annulation-d-un-rdv-donn',
