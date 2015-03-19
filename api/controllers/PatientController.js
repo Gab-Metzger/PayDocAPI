@@ -129,6 +129,15 @@ module.exports = {
         return res.json({message: 'Password Updated'});
       });
     });
+  },
+
+  getAppointmentsList: function(req, res) {
+    Appointment.find({patient: req.param('id')}).exec(function(data, err) {
+      if (err)
+        return res.json(err);
+      else
+        return res.json(data)
+    })
   }
 
 };

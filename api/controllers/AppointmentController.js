@@ -43,31 +43,37 @@ module.exports = {
           doctor: appoint.doctor,
           state : appoint.state,
           notes: appoint.notes
-        })
+        });
 
-        var email = appoint.patient.email;
+        if (appoint.patient != undefined) {
+          var email = appoint.patient.email;
 
-        if (email.indexOf("paydoc.fr") === -1) {
-          Email.send({
-              template: 'email-validation-d-un-rdv-paydoc',
-              data: [
-                {"FNAME": appoint.patient.firstName},
-                {"DNAME": appoint.doctor.lastName}
-              ],
-              to: [{
-                name: appoint.patient.name,
-                email: appoint.patient.email
-              }],
-              subject: '[PayDoc] Validation d\'un rendez-vous'
-            },
-            function optionalCallback (err) {
-              if (err) return res.json(err);
-              else return res.json(appoint);
-            });
+          if (email.indexOf("paydoc.fr") === -1) {
+            Email.send({
+                template: 'email-validation-d-un-rdv-paydoc',
+                data: [
+                  {"FNAME": appoint.patient.firstName},
+                  {"DNAME": appoint.doctor.lastName}
+                ],
+                to: [{
+                  name: appoint.patient.name,
+                  email: appoint.patient.email
+                }],
+                subject: '[PayDoc] Validation d\'un rendez-vous'
+              },
+              function optionalCallback (err) {
+                if (err) return res.json(err);
+                else return res.json(appoint);
+              });
+          }
+          else {
+            return res.json(appoint);
+          }
         }
         else {
           return res.json(appoint);
         }
+
       });
     });
   },
@@ -82,7 +88,7 @@ module.exports = {
               for ( var j = 0 ; j < patients.length; j++){
                 if (patients[j].id == appoint[i].patient.id ) trouve = true;
               }
-              if ( !trouve && (appoint[i].patient.receiveBroadcast)) {
+              if ( !trouve && (appoint[i].patient.receiveBroadcast) && (appoint[i].patient.email.indexOf("paydoc.fr") === -1)) {
                 appoint[i].patient.dname = appoint[i].doctor.lastName;
                 patients[patients.length] = appoint[i].patient;
               }
@@ -209,31 +215,37 @@ module.exports = {
 
   cancel: function(req, res) {
     Appointment.findOne({id : req.param('id')}).populate('patient').populate('doctor').exec(function(err, app) {
-      console.log()
       var appDate = new Date(app.start);
-      Email.send({
-          template: 'email-annulation-d-un-rdv-donn',
-          data: [
-            {
-              "FNAME": app.patient.firstName
-            },
-            {
-              "DNAME": app.doctor.lastName
-            },
-            {
-              "RDVDATE": moment(appDate).format('LL')
-            }
-          ],
-          to: [{
-            name: app.patient.name,
-            email: app.patient.email
-          }],
-          subject: '[PayDoc] Annulation d\'un rendez-vous PayDoc'
-        },
-        function optionalCallback (err) {
-          if (err) return res.json(err);
-          return res.json({message: 'Email sent'});
-        });
+
+      if ((app.patient != undefined) && (app.patient.email.indexOf("paydoc.fr") === -1)) {
+        Email.send({
+            template: 'email-annulation-d-un-rdv-donn',
+            data: [
+              {
+                "FNAME": app.patient.firstName
+              },
+              {
+                "DNAME": app.doctor.lastName
+              },
+              {
+                "RDVDATE": moment(appDate).format('LL')
+              }
+            ],
+            to: [{
+              name: app.patient.name,
+              email: app.patient.email
+            }],
+            subject: '[PayDoc] Annulation d\'un rendez-vous PayDoc'
+          },
+          function optionalCallback (err) {
+            if (err) return res.json(err);
+            return res.json({message: 'Email sent'});
+          });
+      }
+      else {
+        return res.json({message: 'Compte mail fictif'});
+      }
+
     })
   }
 
