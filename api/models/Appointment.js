@@ -48,9 +48,6 @@ module.exports = {
       }
       if (obj.patient != undefined) {
         obj.title = obj.patient.name;
-        if (obj.patient.email.indexOf('paydoc.fr') != -1) {
-          obj.color = 'blue';
-        }
       }
       else {
         obj.title = "RdV proposé !";
