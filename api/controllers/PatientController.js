@@ -115,7 +115,6 @@ module.exports = {
   reset: function(req, res) {
     Patient.findOne({ resetPasswordToken: req.param('token'), resetPasswordExpires: { '>=': new Date() } }, function(err, user) {
       if (!user) {
-        console.log('No user found');
         return res.json({error: 'Password reset token is invalid or has expired.'});
       }
 

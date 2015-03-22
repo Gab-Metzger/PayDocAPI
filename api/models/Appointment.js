@@ -42,12 +42,15 @@ module.exports = {
     toJSON: function() {
       var obj = this.toObject();
       switch(obj.state) {
-        case 'pending'   :  obj.color = 'orange';  break;
+        case 'pending'   :  obj.color = '#FF9900';  break;
         case 'approved':  obj.color = 'green';  break;
         case 'denied'  :  obj.color = 'red';  break;
       }
-      if (obj.patient != undefined) {
+      if (obj.patient != null) {
         obj.title = obj.patient.name;
+        if ((parseInt(obj.patient) !== obj.patient) && obj.patient.email.indexOf('paydoc.fr') != -1) {
+          obj.color = '#FFBF5F';
+        }
       }
       else {
         obj.title = "RdV proposé !";

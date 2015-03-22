@@ -17,12 +17,10 @@ module.exports = {
             var appDate = new Date(data[i].start);
             if (data[i].patient.email.indexOf("paydoc.fr") === -1) {
               //Envoi du template
-              /*Email.send({
-                  template: 'email-rappel-du-rendez-vous',
+              Email.send({
+                  template: 'email-pour-rappel-de-rdv-non-confirm',
                   data: [{
                     'FNAME': data[i].patient.firstName
-                  },{
-                    'DATERDV': moment(appDate).format('LL')
                   },{
                     'DNAME': data[i].doctor.lastName
                   }],
@@ -30,12 +28,12 @@ module.exports = {
                     name: data[i].patient.name,
                     email: data[i].patient.email
                   }],
-                  subject: '[PayDoc] Rappel de rendez-vous'
+                  subject: '[PayDoc] Attention votre rendez-vous n\'est pas confirmé'
                 },
                 function optionalCallback (err) {
                   if (err) return console.log(err);
                   console.log('Mail n°'+i+' sent !');
-                });*/
+                });
             }
           }
 
