@@ -73,6 +73,13 @@ module.exports = {
             });
           }
 
+          /*if (!patient.onceConnected) {
+            patient.onceConnected = false;
+            patient.save(function(error) {
+              if (error) return res.json(error)
+            })
+          }*/
+
           patient.role = 'patient';
           patient.token = sailsTokenAuth.issueToken(patient.id);
           return res.json(patient);
@@ -81,4 +88,3 @@ module.exports = {
     });
   }
 };
-

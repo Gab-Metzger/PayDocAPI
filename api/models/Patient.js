@@ -61,6 +61,11 @@ module.exports = {
       defaultsTo: true
     },
 
+    onceConnected: {
+      type: 'boolean',
+      defaultsTo: false
+    },
+
     toJSON: function() {
       var obj = this.toObject();
       delete obj.encryptedPassword;
@@ -106,4 +111,3 @@ module.exports = {
     }
   }
 };
-
