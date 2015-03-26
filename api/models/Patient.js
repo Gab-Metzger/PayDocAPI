@@ -61,10 +61,10 @@ module.exports = {
       defaultsTo: true
     },
 
-    onceConnected: {
+    /*onceConnected: {
       type: 'boolean',
       defaultsTo: false
-    },
+    },*/
 
     toJSON: function() {
       var obj = this.toObject();
