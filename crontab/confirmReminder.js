@@ -4,10 +4,10 @@ moment.locale('fr');
 module.exports = {
   run : function(){
     var nowDate = new Date();
-    var minDate = addDays(nowDate,2);
-    var maxDate = addDays(nowDate,3);
+    var minDate = addDays(nowDate,7);
+    var maxDate = addDays(nowDate,8);
 
-    Appointment.find({state: {'!': 'denied'}, start: {'>=': minDate, '<': maxDate}})
+    Appointment.find({state: 'pending', start: {'>=': minDate, '<': maxDate}})
       .populate('patient')
       .populate('doctor')
       .exec(function found(err, data) {
@@ -16,12 +16,11 @@ module.exports = {
           if (data[i].patient != undefined) {
             var appDate = new Date(data[i].start);
             if (data[i].patient.email.indexOf("paydoc.fr") === -1) {
+              //Envoi du template
               Email.send({
-                  template: 'email-rappel-du-rendez-vous',
+                  template: 'email-pour-rappel-de-rdv-non-confirm',
                   data: [{
                     'FNAME': data[i].patient.firstName
-                  },{
-                    'DATERDV': moment(appDate).format('LL')
                   },{
                     'DNAME': data[i].doctor.lastName
                   }],
@@ -29,7 +28,7 @@ module.exports = {
                     name: data[i].patient.name,
                     email: data[i].patient.email
                   }],
-                  subject: '[PayDoc] Rappel de rendez-vous'
+                  subject: '[PayDoc] Attention votre rendez-vous n\'est pas confirmé'
                 },
                 function optionalCallback (err) {
                   if (err) return console.log(err);
@@ -41,7 +40,7 @@ module.exports = {
         }
       })
 
-      return false;
+    return false;
   }
 };
 

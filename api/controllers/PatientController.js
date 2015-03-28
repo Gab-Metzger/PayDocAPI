@@ -17,6 +17,9 @@ module.exports = {
       lastName: params.lastName,
       firstName: params.firstName,
       email: params.email,
+      mobilePhone: params.mobilePhone,
+      phone: params.phone,
+      address: params.address,
       password: password,
       confirmation: password
     };
@@ -37,20 +40,24 @@ module.exports = {
         }
       ];
 
+      if (created.email.indexOf("paydoc.fr") === -1) {
+        Email.send({
+          template: 'email-la-cr-ation-du-compte-paydoc',
+          data: template_content,
+          to: [{
+            name: created.name,
+            email: created.email
+          }],
+          subject: '[PayDoc] Confirmation de création de compte'
+        }, function optionalCallback (err) {
+          if (err) return res.json(err);
+          else return res.json(created);
+        });
+      }
+      else {
+        return res.json(created);
+      }
 
-
-      Email.send({
-        template: 'email-la-cr-ation-du-compte-paydoc',
-        data: template_content,
-        to: [{
-          name: created.name,
-          email: created.email
-        }],
-        subject: '[PayDoc] Confirmation de création de compte'
-      }, function optionalCallback (err) {
-        if (err) return res.json(err);
-        else return res.json(created);
-      });
     });
   },
 
@@ -108,7 +115,6 @@ module.exports = {
   reset: function(req, res) {
     Patient.findOne({ resetPasswordToken: req.param('token'), resetPasswordExpires: { '>=': new Date() } }, function(err, user) {
       if (!user) {
-        console.log('No user found');
         return res.json({error: 'Password reset token is invalid or has expired.'});
       }
 
@@ -125,4 +131,3 @@ module.exports = {
   }
 
 };
-

@@ -65,6 +65,12 @@ module.exports = {
       defaultsTo: 0
     },
 
+    consultTime: {
+      type: 'integer',
+      defaultsTo: 15,
+      required: true
+    },
+
     toJSON: function() {
       var obj = this.toObject();
       delete obj.encryptedPassword;

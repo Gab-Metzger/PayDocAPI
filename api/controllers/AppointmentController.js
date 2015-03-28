@@ -10,54 +10,70 @@ moment.locale('fr');
 
 module.exports = {
 
+  getAppointmentsByDoctor: function(req, res) {
+    Appointment.find({doctor: req.param('id'), start: {'>': new Date()}}).populate('patient').exec(function got(appointments, err) {
+      if (err) return res.json(err)
+      else return res.json(appointments);
+    });
+  },
+
   create: function(req, res){
     var params = req.params.all();
 
     var newAppointment = {
-      startDate: params.startDate,
+      start: params.start,
+      end: params.end,
       patient: params.patient,
-      doctor: params.doctor
+      doctor: params.doctor,
+      notes: params.notes
     };
 
     Appointment.create(newAppointment).exec(function createCB(err,created){
 
       if (err) return res.json(err);
 
-
-
-      Appointment.find({id: created.id}).populate('patient').populate('doctor').exec(function found(err, appoint) {
+      Appointment.findOne(created.id).populate('patient').populate('doctor').exec(function found(err, appoint) {
         if (err) return res.json(err);
 
         Appointment.publishCreate({
           id : created.id,
           patient : created.patient,
-          startDate : created.startDate,
-          doctor: appoint[0].doctor,
-          state : appoint[0].state
-        })
+          start : created.start,
+          end: created.end,
+          doctor: appoint.doctor,
+          state : appoint.state,
+          notes: appoint.notes
+        });
 
-        var template_content = [
-         {
-         "FNAME": appoint[0].patient.firstName
-         },
-          {
-            "DNAME": appoint[0].doctor.lastName
+        if (appoint.patient != undefined) {
+          var email = appoint.patient.email;
+
+          if (email.indexOf("paydoc.fr") === -1) {
+            Email.send({
+                template: 'email-validation-d-un-rdv-paydoc',
+                data: [
+                  {"FNAME": appoint.patient.firstName},
+                  {"DNAME": appoint.doctor.lastName}
+                ],
+                to: [{
+                  name: appoint.patient.name,
+                  email: appoint.patient.email
+                }],
+                subject: '[PayDoc] Validation d\'un rendez-vous'
+              },
+              function optionalCallback (err) {
+                if (err) return res.json(err);
+                else return res.json(appoint);
+              });
           }
-         ];
+          else {
+            return res.json(appoint);
+          }
+        }
+        else {
+          return res.json(appoint);
+        }
 
-         Email.send({
-          template: 'email-validation-d-un-rdv-paydoc',
-          data: template_content,
-          to: [{
-            name: appoint[0].patient.name,
-            email: appoint[0].patient.email
-          }],
-          subject: '[PayDoc] Validation d\'un rendez-vous'
-          },
-           function optionalCallback (err) {
-            if (err) return res.json(err);
-            else return res.json(appoint);
-         });
       });
     });
   },
@@ -65,14 +81,14 @@ module.exports = {
   broadcast: function(req, res) {
     var params = req.params.all();
     var patients = [];
-    Appointment.find({doctor: params.doctor, state : {'!': "denied"}, startDate: {'>': params.startDate}}).populate('patient').populate('doctor').exec(function (err, appoint){
+    Appointment.find({doctor: params.doctor, state : {'!': "denied"}, start: {'>': params.start}}).populate('patient').populate('doctor').exec(function (err, appoint){
         for ( var i = 0 ; i < appoint.length; i++ ){
             if (appoint[i].patient != undefined) {
               var trouve = false;
               for ( var j = 0 ; j < patients.length; j++){
                 if (patients[j].id == appoint[i].patient.id ) trouve = true;
               }
-              if ( !trouve && (appoint[i].patient.receiveBroadcast)) {
+              if ( !trouve && (appoint[i].patient.receiveBroadcast) && (appoint[i].patient.email.indexOf("paydoc.fr") === -1)) {
                 appoint[i].patient.dname = appoint[i].doctor.lastName;
                 patients[patients.length] = appoint[i].patient;
               }
@@ -106,7 +122,8 @@ module.exports = {
     });
 
     var newAppointment = {
-      startDate: params.startDate,
+      start: params.start,
+      end: params.end,
       doctor: params.doctor
     };
 
@@ -127,7 +144,7 @@ module.exports = {
     var appointments = [];
 
 
-    Appointment.find({patient: params.patient, state : {'!': "denied"}, startDate : {">": new Date().toISOString()} }).populate('doctor').exec(function(err,appoint){
+    Appointment.find({patient: params.patient, state : {'!': "denied"}, start : {">": new Date().toISOString()} }).populate('doctor').exec(function(err,appoint){
 
       for ( var i = 0 ; i < appoint.length; i++ ){
         var trouve = false;
@@ -198,33 +215,38 @@ module.exports = {
 
   cancel: function(req, res) {
     Appointment.findOne({id : req.param('id')}).populate('patient').populate('doctor').exec(function(err, app) {
-      var appDate = new Date(app.startDate);
-      Email.send({
-          template: 'email-annulation-d-un-rdv-donn',
-          data: [
-            {
-              "FNAME": app.patient.firstName
-            },
-            {
-              "DNAME": app.doctor.lastName
-            },
-            {
-              "RDVDATE": moment(appDate).format('LL')
-            }
-          ],
-          to: [{
-            name: app.patient.name,
-            email: app.patient.email
-          }],
-          subject: '[PayDoc] Annulation d\'un rendez-vous PayDoc'
-        },
-        function optionalCallback (err) {
-          if (err) return res.json(err);
-          return res.json({message: 'Email sent'});
-        });
+      var appDate = new Date(app.start);
+
+      if ((app.patient != undefined) && (app.patient.email.indexOf("paydoc.fr") === -1)) {
+        Email.send({
+            template: 'email-annulation-d-un-rdv-donn',
+            data: [
+              {
+                "FNAME": app.patient.firstName
+              },
+              {
+                "DNAME": app.doctor.lastName
+              },
+              {
+                "RDVDATE": moment(appDate).format('LL')
+              }
+            ],
+            to: [{
+              name: app.patient.name,
+              email: app.patient.email
+            }],
+            subject: '[PayDoc] Annulation d\'un rendez-vous PayDoc'
+          },
+          function optionalCallback (err) {
+            if (err) return res.json(err);
+            return res.json({message: 'Email sent'});
+          });
+      }
+      else {
+        return res.json({message: 'Compte mail fictif'});
+      }
+
     })
   }
 
 };
-
-

@@ -27,6 +27,10 @@ module.exports = {
       unique: true
     },
 
+    mobilePhone: {
+      type: 'string'
+    },
+
     phone: {
       type: 'string'
     },
@@ -56,6 +60,11 @@ module.exports = {
       type: 'boolean',
       defaultsTo: true
     },
+
+    /*onceConnected: {
+      type: 'boolean',
+      defaultsTo: false
+    },*/
 
     toJSON: function() {
       var obj = this.toObject();
@@ -102,4 +111,3 @@ module.exports = {
     }
   }
 };
-
