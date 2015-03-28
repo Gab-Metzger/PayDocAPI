@@ -48,8 +48,8 @@ module.exports = {
       }
       if (obj.patient != null) {
         obj.title = obj.patient.name;
-        if ((parseInt(obj.patient) !== obj.patient) && obj.patient.email.indexOf('paydoc.fr') != -1) {
-          obj.color = '#FFBF5F';
+        if ((parseInt(obj.patient) !== obj.patient) && (obj.patient.email.indexOf('paydoc.fr') != -1) && (obj.patient.mobilePhone == null)) {
+          obj.color = '#2C6EBE';
         }
       }
       else {
@@ -61,4 +61,3 @@ module.exports = {
     }
   }
 };
-
