@@ -54,7 +54,7 @@ module.exports = {
       }
       else {
         if (obj.state == 'blocked') {
-          obj.title = "Congé / Maladie";
+          obj.title = "Créneau bloqué";
           obj.color = '#A89E9E';
         }
         else {
