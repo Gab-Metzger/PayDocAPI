@@ -23,6 +23,7 @@ module.exports = {
     var newAppointment = {
       start: params.start,
       end: params.end,
+      state: params.state,
       patient: params.patient,
       doctor: params.doctor,
       notes: params.notes
@@ -81,7 +82,7 @@ module.exports = {
   broadcast: function(req, res) {
     var params = req.params.all();
     var patients = [];
-    Appointment.find({doctor: params.doctor, state : {'!': "denied"}, start: {'>': params.start}}).populate('patient').populate('doctor').exec(function (err, appoint){
+    Appointment.find({doctor: params.doctor, state : {'!': "denied", '!': "blocked"}, start: {'>': params.start}}).populate('patient').populate('doctor').exec(function (err, appoint){
         for ( var i = 0 ; i < appoint.length; i++ ){
             if (appoint[i].patient != undefined) {
               var trouve = false;
@@ -144,7 +145,7 @@ module.exports = {
     var appointments = [];
 
 
-    Appointment.find({patient: params.patient, state : {'!': "denied"}, start : {">": new Date().toISOString()} }).populate('doctor').exec(function(err,appoint){
+    Appointment.find({patient: params.patient, state : {'!': "denied", '!': "blocked"}, start : {">": new Date().toISOString()} }).populate('doctor').exec(function(err,appoint){
 
       for ( var i = 0 ; i < appoint.length; i++ ){
         var trouve = false;

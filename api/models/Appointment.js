@@ -22,7 +22,7 @@ module.exports = {
 
     state: {
       type: 'string',
-      enum: ['pending', 'approved', 'denied'],
+      enum: ['pending', 'approved', 'denied', 'blocked'],
       defaultsTo: 'pending'
     },
 
@@ -53,8 +53,15 @@ module.exports = {
         }
       }
       else {
-        obj.title = "RdV proposé !";
-        obj.color = 'violet';
+        if (obj.state == 'blocked') {
+          obj.title = "Congé / Maladie";
+          obj.color = '#A89E9E';
+        }
+        else {
+          obj.title = "RdV proposé !";
+          obj.color = 'violet';
+        }
+
       }
       obj.allDay = false;
       return obj;
