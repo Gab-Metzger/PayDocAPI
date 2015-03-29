@@ -5,6 +5,9 @@
 * @docs        :: http://sailsjs.org/#!documentation/models
 */
 
+var moment = require('moment');
+moment.locale('fr');
+
 module.exports = {
 
   schema: true,
@@ -33,6 +36,10 @@ module.exports = {
 
     phone: {
       type: 'string'
+    },
+
+    dateOfBirth: {
+      type: 'date'
     },
 
     address: {
@@ -70,6 +77,12 @@ module.exports = {
       var obj = this.toObject();
       delete obj.encryptedPassword;
       obj.name = obj.lastName.toUpperCase() + ' ' + obj.firstName;
+      if (obj.dateOfBirth != null) {
+        obj.namebirth = obj.name + ' (' + moment(obj.dateOfBirth).format('L') + ')';
+      }
+      else {
+        obj.namebirth = obj.name
+      }
       obj.token = sailsTokenAuth.issueToken(obj.id);
       return obj;
     }
@@ -92,6 +105,10 @@ module.exports = {
   },
 
   beforeUpdate: function (values, next) {
+
+    if (values.dateOfBirth) {
+      values.dateOfBirth = moment(values.dateOfBirth);
+    }
 
     if (!values.password && !values.confirmation) {
       next();

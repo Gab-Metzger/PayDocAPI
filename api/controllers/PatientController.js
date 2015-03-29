@@ -6,6 +6,8 @@
  */
 var generatePassword = require('password-generator');
 var crypto = require('crypto');
+var moment = require('moment');
+moment.locale('fr');
 
 module.exports = {
 
@@ -19,6 +21,7 @@ module.exports = {
       email: params.email,
       mobilePhone: params.mobilePhone,
       phone: params.phone,
+      dateOfBirth: moment(params.dateOfBirth),
       address: params.address,
       password: password,
       confirmation: password
