@@ -81,7 +81,7 @@ module.exports = {
         obj.namebirth = obj.name + ' (' + moment(obj.dateOfBirth).format('L') + ')';
       }
       else {
-        obj.namebirth = obj.name
+        obj.namebirth = obj.name;
       }
       obj.token = sailsTokenAuth.issueToken(obj.id);
       return obj;

@@ -21,7 +21,7 @@ module.exports = {
       email: params.email,
       mobilePhone: params.mobilePhone,
       phone: params.phone,
-      dateOfBirth: moment(params.dateOfBirth),
+      dateOfBirth: params.dateOfBirth,
       address: params.address,
       password: password,
       confirmation: password
