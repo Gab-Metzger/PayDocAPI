@@ -145,7 +145,7 @@ module.exports = {
     var appointments = [];
 
 
-    Appointment.find({patient: params.patient, state : {'!': "denied", '!': "blocked"}, start : {">": new Date().toISOString()} }).populate('doctor').exec(function(err,appoint){
+    Appointment.find({patient: params.patient, state : {'!': "denied"}, start : {">": new Date().toISOString()} }).populate('doctor').exec(function(err,appoint){
 
       for ( var i = 0 ; i < appoint.length; i++ ){
         var trouve = false;
@@ -159,7 +159,7 @@ module.exports = {
         // 2nd param is the function that each item is passed to
         function(item, callback){
 
-          Appointment.find({doctor: item.id, patient: null}).populate('doctor').exec(function(err, app){
+          Appointment.find({doctor: item.id, patient: null, state: {'!': 'blocked'}}).populate('doctor').exec(function(err, app){
                   for ( var z = 0 ; z < app.length ; z++ ){
                     appointments.push(app[z]);
                   }
