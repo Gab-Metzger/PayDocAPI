@@ -42,8 +42,8 @@ module.exports = {
     toJSON: function() {
       var obj = this.toObject();
       switch(obj.state) {
-        case 'pending'   :  obj.color = '#F4FA58';  break;
-        case 'approved':  obj.color = '#82FA58 ';  break;
+        case 'pending'   :  obj.color = '#FFFF00';  break;
+        case 'approved':  obj.color = '#2EFE64 ';  break;
         case 'denied'  :  obj.color = 'red';  break;
       }
       if (obj.patient != null) {
