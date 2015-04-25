@@ -95,7 +95,7 @@ module.exports.connections = {
     apiKey: process.env.MANDRILL_KEY || 'JlhyYIGu5EDZDSt1OBwfUg', // the api key for your mandrill account
     from: {
       name: 'PayDoc Manager',
-      email: 'contact@paydoc.com'
+      email: 'noreply@paydoc.fr'
     }
   }
 };

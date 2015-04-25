@@ -206,6 +206,18 @@ module.exports = {
     })
   },
 
+  confirmAppointmentByEmail: function(req,res){
+    var params = req.params.all();
+    Appointment.update({id: params.id},{
+      state : 'approved'
+    }).exec(function(err,data){
+      if (!err)
+        return res.json(err)
+      else
+        return res.send('Votre rendez-vous à bien été confirmé !')
+    })
+  },
+
   subscribeAppointment: function(req,res){
     if (req.isSocket){
       Appointment.find({}).exec(function(e,listOfApp){

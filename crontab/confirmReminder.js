@@ -4,8 +4,8 @@ moment.locale('fr');
 module.exports = {
   run : function(){
     var nowDate = new Date();
-    var minDate = addDays(nowDate,7);
-    var maxDate = addDays(nowDate,8);
+    var minDate = addDays(nowDate,4);
+    var maxDate = addDays(nowDate,5);
 
     Appointment.find({state: 'pending', start: {'>=': minDate, '<': maxDate}})
       .populate('patient')
@@ -49,5 +49,3 @@ function addDays(date, days) {
   result.setDate(date.getDate() + days);
   return result;
 }
-
-

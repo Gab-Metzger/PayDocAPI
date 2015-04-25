@@ -39,6 +39,11 @@ module.exports = {
       type:'text'
     },
 
+    happened: {
+      type: 'boolean',
+      defaultsTo: false
+    },
+
     toJSON: function() {
       var obj = this.toObject();
       switch(obj.state) {
@@ -47,7 +52,10 @@ module.exports = {
         case 'denied'  :  obj.color = 'red';  break;
       }
       if (obj.patient != null) {
-        obj.title = obj.patient.name;
+        if (obj.happened)
+          obj.title = obj.patient.lastName + ' - arrivé';
+        else
+          obj.title = obj.patient.lastName;
         if ((parseInt(obj.patient) !== obj.patient) && (obj.patient.email.indexOf('paydoc.fr') != -1) && (obj.patient.mobilePhone == null)) {
           obj.color = '#2E64FE';
         }
@@ -63,7 +71,7 @@ module.exports = {
         }
 
       }
-      obj.allDay = false;
+      //obj.allDay = false;
       return obj;
     }
   }
