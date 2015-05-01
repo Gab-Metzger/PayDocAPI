@@ -49,12 +49,13 @@ module.exports = {
         if (appoint.patient != undefined) {
           var email = appoint.patient.email;
           var mobile = appoint.patient.mobilePhone;
+          var name = appoint.patient.lastName.toUpperCase() + ' ' + appoint.patient.firstName;
           if (email.indexOf("paydoc.fr") === -1) {
             if (mobile != undefined) {
               var mergedVars = [
                 {"FNAME": appoint.patient.firstName},
                 {"DNAME": appoint.doctor.lastName},
-                {"PNAME": appoint.patient.name},
+                {"PNAME": name},
                 {"PMOBILE": appoint.patient.mobilePhone}
               ]
             }
@@ -62,14 +63,14 @@ module.exports = {
               var mergedVars = [
                 {"FNAME": appoint.patient.firstName},
                 {"DNAME": appoint.doctor.lastName},
-                {"PNAME": appoint.patient.name}
+                {"PNAME": name}
               ]
             }
             Email.send({
                 template: 'email-validation-d-un-rdv-paydoc',
                 data: mergedVars,
                 to: [{
-                  name: appoint.patient.name,
+                  name: name,
                   email: appoint.patient.email
                 }],
                 subject: '[PayDoc] Validation d\'un rendez-vous'
