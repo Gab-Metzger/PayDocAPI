@@ -28,16 +28,15 @@ module.exports = {
     };
 
     Patient.create(newPatient).exec(function createCB(err,created){
-
       if (err) return res.json(err);
-
+      var name = created.lastName.toUpperCase() + ' ' + created.firstName
       if (created.email.indexOf("paydoc.fr") === -1) {
         if (created.mobilePhone != undefined) {
           var mergedVars = [
             {"FNAME": created.firstName},
             {"EMAIL": created.email},
             {"PASSWORD": password},
-            {"PNAME": created.name},
+            {"PNAME": name},
             {"PMOBILE": created.mobilePhone}
           ]
         }
@@ -46,14 +45,14 @@ module.exports = {
             {"FNAME": created.firstName},
             {"EMAIL": created.email},
             {"PASSWORD": password},
-            {"PNAME": created.name}
+            {"PNAME": name}
           ]
         }
         Email.send({
           template: 'email-la-cr-ation-du-compte-paydoc',
           data: mergedVars,
           to: [{
-            name: created.name,
+            name: name,
             email: created.email
           }],
           subject: '[PayDoc] Confirmation de création de compte'
@@ -67,7 +66,7 @@ module.exports = {
           {"FNAME": created.firstName},
           {"EMAIL": created.email},
           {"PASSWORD": password},
-          {"PNAME": created.name},
+          {"PNAME": name},
           {"PMOBILE": created.mobilePhone}
         ];
 
