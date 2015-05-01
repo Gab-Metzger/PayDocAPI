@@ -48,14 +48,26 @@ module.exports = {
 
         if (appoint.patient != undefined) {
           var email = appoint.patient.email;
-
+          var mobile = appoint.patient.mobilePhone;
           if (email.indexOf("paydoc.fr") === -1) {
+            if (mobile != undefined) {
+              var mergedVars = [
+                {"FNAME": appoint.patient.firstName},
+                {"DNAME": appoint.doctor.lastName},
+                {"PNAME": appoint.patient.name},
+                {"PMOBILE": appoint.patient.mobilePhone}
+              ]
+            }
+            else {
+              var mergedVars = [
+                {"FNAME": appoint.patient.firstName},
+                {"DNAME": appoint.doctor.lastName},
+                {"PNAME": appoint.patient.name}
+              ]
+            }
             Email.send({
                 template: 'email-validation-d-un-rdv-paydoc',
-                data: [
-                  {"FNAME": appoint.patient.firstName},
-                  {"DNAME": appoint.doctor.lastName}
-                ],
+                data: mergedVars,
                 to: [{
                   name: appoint.patient.name,
                   email: appoint.patient.email

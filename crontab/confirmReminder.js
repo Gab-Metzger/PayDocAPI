@@ -16,17 +16,49 @@ module.exports = {
           if (data[i].patient != undefined) {
             var appDate = new Date(data[i].start);
             if (data[i].patient.email.indexOf("paydoc.fr") === -1) {
-              //Envoi du template
+              if (data[i].patient.mobilePhone != undefined) {
+                var mergedVars = [
+                  {"FNAME": data[i].patient.firstName},
+                  {"DNAME": data[i].doctor.lastName},
+                  {"PNAME": data[i].patient.name},
+                  {"PMOBILE": data[i].patient.mobilePhone}
+                ]
+              }
+              else {
+                var mergedVars = [
+                  {"FNAME": data[i].patient.firstName},
+                  {"DNAME": data[i].doctor.lastName},
+                  {"PNAME": data[i].patient.name}
+                ]
+              }
               Email.send({
                   template: 'email-pour-rappel-de-rdv-non-confirm',
-                  data: [{
-                    'FNAME': data[i].patient.firstName
-                  },{
-                    'DNAME': data[i].doctor.lastName
-                  }],
+                  data: mergedVars,
                   to: [{
                     name: data[i].patient.name,
                     email: data[i].patient.email
+                  }],
+                  subject: '[PayDoc] Attention votre rendez-vous n\'est pas confirmé'
+                },
+                function optionalCallback (err) {
+                  if (err) return console.log(err);
+                  console.log('Mail n°'+i+' sent !');
+                });
+            }
+            else if (data[i].patient.email.indexOf("paydoc.fr") != -1 && data[i].patient.mobilePhone != undefined) {
+              var mergedVars = [
+                {"FNAME": data[i].patient.firstName},
+                {"DNAME": data[i].doctor.lastName},
+                {"PNAME": data[i].patient.name},
+                {"PMOBILE": data[i].patient.mobilePhone}
+              ];
+
+              Email.send({
+                  template: 'email-pour-rappel-de-rdv-non-confirm',
+                  data: mergedVars,
+                  to: [{
+                    name: 'PayDoc',
+                    email: 'contact@paydoc.fr'
                   }],
                   subject: '[PayDoc] Attention votre rendez-vous n\'est pas confirmé'
                 },

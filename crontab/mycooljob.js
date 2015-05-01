@@ -16,15 +16,26 @@ module.exports = {
           if (data[i].patient != undefined) {
             var appDate = new Date(data[i].start);
             if (data[i].patient.email.indexOf("paydoc.fr") === -1) {
+              if (data[i].patient.mobilePhone != undefined) {
+                var mergedVars = [
+                  {"FNAME": data[i].patient.firstName},
+                  {"DATERDV": moment(appDate).format('LL')},
+                  {"DNAME": data[i].doctor.lastName},
+                  {"PNAME": data[i].patient.name},
+                  {"PMOBILE": data[i].patient.mobilePhone}
+                ]
+              }
+              else {
+                var mergedVars = [
+                  {"FNAME": data[i].patient.firstName},
+                  {"DATERDV": moment(appDate).format('LL')},
+                  {"DNAME": data[i].doctor.lastName},
+                  {"PNAME": data[i].patient.name}
+                ]
+              }
               Email.send({
                   template: 'email-rappel-du-rendez-vous',
-                  data: [{
-                    'FNAME': data[i].patient.firstName
-                  },{
-                    'DATERDV': moment(appDate).format('LL')
-                  },{
-                    'DNAME': data[i].doctor.lastName
-                  }],
+                  data: mergedVars,
                   to: [{
                     name: data[i].patient.name,
                     email: data[i].patient.email
@@ -50,5 +61,3 @@ function addDays(date, days) {
   result.setDate(date.getDate() + days);
   return result;
 }
-
-

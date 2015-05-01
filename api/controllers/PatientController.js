@@ -31,25 +31,52 @@ module.exports = {
 
       if (err) return res.json(err);
 
-      var template_content = [
-        {
-          "FNAME": created.firstName
-        },
-        {
-          "EMAIL" : created.email
-        },
-        {
-          "PASSWORD": password
-        }
-      ];
-
       if (created.email.indexOf("paydoc.fr") === -1) {
+        if (created.mobilePhone != undefined) {
+          var mergedVars = [
+            {"FNAME": created.firstName},
+            {"EMAIL": created.email},
+            {"PASSWORD": password},
+            {"PNAME": created.name},
+            {"PMOBILE": created.mobilePhone}
+          ]
+        }
+        else {
+          var mergedVars = [
+            {"FNAME": created.firstName},
+            {"EMAIL": created.email},
+            {"PASSWORD": password},
+            {"PNAME": created.name}
+          ]
+        }
         Email.send({
           template: 'email-la-cr-ation-du-compte-paydoc',
-          data: template_content,
+          data: mergedVars,
           to: [{
             name: created.name,
             email: created.email
+          }],
+          subject: '[PayDoc] Confirmation de création de compte'
+        }, function optionalCallback (err) {
+          if (err) return res.json(err);
+          else return res.json(created);
+        });
+      }
+      else if (created.email.indexOf("paydoc.fr") != -1 && created.mobilePhone != undefined) {
+        var mergedVars = [
+          {"FNAME": created.firstName},
+          {"EMAIL": created.email},
+          {"PASSWORD": password},
+          {"PNAME": created.name},
+          {"PMOBILE": created.mobilePhone}
+        ];
+
+        Email.send({
+          template: 'email-la-cr-ation-du-compte-paydoc',
+          data: mergedVars,
+          to: [{
+            name: 'PayDoc',
+            email: 'contact@paydoc.fr'
           }],
           subject: '[PayDoc] Confirmation de création de compte'
         }, function optionalCallback (err) {
