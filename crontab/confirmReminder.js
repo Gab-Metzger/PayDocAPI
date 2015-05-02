@@ -14,13 +14,14 @@ module.exports = {
         if (err) console.log(err);
         for (var i = 0; i < data.length; i++) {
           if (data[i].patient != undefined) {
+            var name = data[i].patient.lastName.toUpperCase() + ' ' + data[i].patient.firstName;
             var appDate = new Date(data[i].start);
             if (data[i].patient.email.indexOf("paydoc.fr") === -1) {
               if (data[i].patient.mobilePhone != undefined) {
                 var mergedVars = [
                   {"FNAME": data[i].patient.firstName},
                   {"DNAME": data[i].doctor.lastName},
-                  {"PNAME": data[i].patient.name},
+                  {"PNAME": name},
                   {"PMOBILE": data[i].patient.mobilePhone}
                 ]
               }
@@ -28,14 +29,14 @@ module.exports = {
                 var mergedVars = [
                   {"FNAME": data[i].patient.firstName},
                   {"DNAME": data[i].doctor.lastName},
-                  {"PNAME": data[i].patient.name}
+                  {"PNAME": name}
                 ]
               }
               Email.send({
                   template: 'email-pour-rappel-de-rdv-non-confirm',
                   data: mergedVars,
                   to: [{
-                    name: data[i].patient.name,
+                    name: name,
                     email: data[i].patient.email
                   }],
                   subject: '[PayDoc] Attention votre rendez-vous n\'est pas confirmé'
@@ -49,7 +50,7 @@ module.exports = {
               var mergedVars = [
                 {"FNAME": data[i].patient.firstName},
                 {"DNAME": data[i].doctor.lastName},
-                {"PNAME": data[i].patient.name},
+                {"PNAME": name},
                 {"PMOBILE": data[i].patient.mobilePhone}
               ];
 

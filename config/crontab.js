@@ -13,7 +13,7 @@ module.exports.crontab = {
       continueTask = require('../crontab/mycooljob.js').run();
   },
 
-  '10 6 * * *': function(){
+  '0 20 * * *': function(){
     var continueTask = true;
     if (continueTask)
       continueTask = require('../crontab/confirmReminder.js').run();
