@@ -14,6 +14,7 @@ module.exports = {
         if (err) console.log(err);
         for (var i = 0; i < data.length; i++) {
           if (data[i].patient != undefined) {
+            var name = data[i].patient.lastName.toUpperCase() + ' ' + data[i].patient.firstName;
             var appDate = new Date(data[i].start);
             if (data[i].patient.email.indexOf("paydoc.fr") === -1) {
               if (data[i].patient.mobilePhone != undefined) {
@@ -21,7 +22,7 @@ module.exports = {
                   {"FNAME": data[i].patient.firstName},
                   {"DATERDV": moment(appDate).format('LL')},
                   {"DNAME": data[i].doctor.lastName},
-                  {"PNAME": data[i].patient.name},
+                  {"PNAME": name},
                   {"PMOBILE": data[i].patient.mobilePhone}
                 ]
               }
@@ -30,21 +31,21 @@ module.exports = {
                   {"FNAME": data[i].patient.firstName},
                   {"DATERDV": moment(appDate).format('LL')},
                   {"DNAME": data[i].doctor.lastName},
-                  {"PNAME": data[i].patient.name}
+                  {"PNAME": name}
                 ]
               }
               Email.send({
                   template: 'email-rappel-du-rendez-vous',
                   data: mergedVars,
                   to: [{
-                    name: data[i].patient.name,
+                    name: name,
                     email: data[i].patient.email
                   }],
                   subject: '[PayDoc] Rappel de rendez-vous'
                 },
                 function optionalCallback (err) {
                   if (err) return console.log(err);
-                  console.log('Mail n°'+i+' sent !');
+                  console.log('Mail to '+data[i].patient.email+' sent !');
                 });
             }
           }

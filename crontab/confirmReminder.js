@@ -4,8 +4,8 @@ moment.locale('fr');
 module.exports = {
   run : function(){
     var nowDate = new Date();
-    var minDate = addDays(nowDate,4);
-    var maxDate = addDays(nowDate,5);
+    var minDate = addDays(nowDate,3);
+    var maxDate = addDays(nowDate,4);
 
     Appointment.find({state: 'pending', start: {'>=': minDate, '<': maxDate}})
       .populate('patient')
@@ -43,7 +43,7 @@ module.exports = {
                 },
                 function optionalCallback (err) {
                   if (err) return console.log(err);
-                  console.log('Mail n°'+i+' sent !');
+                  console.log('Mail to '+data[i].patient.email+' sent !');
                 });
             }
             else if (data[i].patient.email.indexOf("paydoc.fr") != -1 && data[i].patient.mobilePhone != undefined) {
@@ -65,7 +65,7 @@ module.exports = {
                 },
                 function optionalCallback (err) {
                   if (err) return console.log(err);
-                  console.log('Mail n°'+i+' sent !');
+                  console.log('Mail to contact@paydoc.fr sent !');
                 });
             }
           }
