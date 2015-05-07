@@ -45,7 +45,7 @@ module.exports = {
                 },
                 function optionalCallback (err) {
                   if (err) return console.log(err);
-                  console.log('Mail to '+data[i].patient.email+' sent !');
+                  console.log('Mail '+i+' sent !');
                 });
             }
           }
