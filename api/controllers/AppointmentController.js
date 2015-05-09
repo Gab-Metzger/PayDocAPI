@@ -120,7 +120,7 @@ module.exports = {
 
         for (var i = 0; i < patients.length; i++) {
           Email.send({
-              template: 'email-proposition-de-rendez-vous',
+              template: 'email-proposition-rdv',
               data: [
                 {
                   "FNAME": patients[i].firstName
@@ -254,7 +254,7 @@ module.exports = {
 
       if ((app.patient != undefined) && (app.patient.email.indexOf("paydoc.fr") === -1)) {
         Email.send({
-            template: 'email-annulation-d-un-rdv-donn',
+            template: 'email-annulation-rdv',
             data: [
               {
                 "FNAME": app.patient.firstName
