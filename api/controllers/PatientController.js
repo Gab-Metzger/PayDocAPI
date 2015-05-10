@@ -34,6 +34,7 @@ module.exports = {
         if (created.mobilePhone != undefined) {
           var mergedVars = [
             {"FNAME": created.firstName},
+            {"DNAME" : req.param('dname')},
             {"EMAIL": created.email},
             {"PASSWORD": password},
             {"PNAME": name},
@@ -43,6 +44,7 @@ module.exports = {
         else {
           var mergedVars = [
             {"FNAME": created.firstName},
+            {"DNAME" : req.param('dname')},
             {"EMAIL": created.email},
             {"PASSWORD": password},
             {"PNAME": name}
