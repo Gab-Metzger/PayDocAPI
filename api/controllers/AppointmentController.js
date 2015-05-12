@@ -95,53 +95,43 @@ module.exports = {
   broadcast: function(req, res) {
     var params = req.params.all();
     var patients = [];
-    var debut = moment(params.start);
-    var end = moment(params.end);
-    console.log("Date de debut : " + end.diff(debut,'minutes'));
-    console.log("Temps de rendez-vous : " + params.end);
-    Appointment.find({doctor: params.doctor, state : {'!': "denied", '!': "blocked"}, start: {'>': params.start}}).populate('patient').populate('doctor').exec(function (err, appoint){
-        console.log(appoint);
-        for ( var i = 0 ; i < appoint.length; i++ ){
-            var debutApp = moment(appoint[i].start);
-            var finApp = moment(appoint[i].end);
-            if (finApp.diff(debutApp,'minutes') == end.diff(debut,'minutes')){
-              if (appoint[i].patient != undefined) {
-                var trouve = false;
-                for ( var j = 0 ; j < patients.length; j++){
-                  if (patients[j].id == appoint[i].patient.id ) trouve = true;
-                }
-                if ( !trouve && (appoint[i].patient.receiveBroadcast) && (appoint[i].patient.email.indexOf("paydoc.fr") === -1)) {
-                  appoint[i].patient.dname = appoint[i].doctor.lastName;
-                  patients[patients.length] = appoint[i].patient;
-                }
-              }
+    Appointment.find({where : {doctor: params.doctor, state : {'!': "denied", '!': "blocked"}, start: {'>': params.start}}, sort:'start', limit:200}).populate('patient').populate('doctor').exec(function (err, appoint){
+      console.log(appoint);
+      for (var i = 0 ; i < appoint.length; i++){
+          if (appoint[i].patient != undefined) {
+            var trouve = false;
+            for ( var j = 0 ; j < patients.length; j++){
+              if (patients[j].id == appoint[i].patient.id ) trouve = true;
             }
-        }
+            if ( !trouve && (appoint[i].patient.receiveBroadcast) && (appoint[i].patient.email.indexOf("paydoc.fr") === -1)) {
+              appoint[i].patient.dname = appoint[i].doctor.lastName;
+              patients[patients.length] = appoint[i].patient;
+            }
+          }
+      }
 
-        for (var i = 0; i < patients.length; i++) {
-          Email.send({
-              template: 'email-proposition-rdv',
-              data: [
-                {
-                  "FNAME": patients[i].firstName
-                },
-                {
-                  "DNAME": patients[i].dname
-                }
-              ],
-              to: [{
-                name: patients[i].name,
-                email: patients[i].email
-              }],
-              subject: '[PayDoc] Profitez d\'une annulation chez votre médecin'
-            },
-            function optionalCallback (err) {
-              if (err) return res.json(err);
-              console.log('Broadcast - Mail n°'+i+' sent !');
-            });
-        }
-
-        //return res.json(patients);
+      for (var i = 0; i < patients.length; i++) {
+        Email.send({
+            template: 'email-proposition-rdv',
+            data: [
+              {
+                "FNAME": patients[i].firstName
+              },
+              {
+                "DNAME": patients[i].dname
+              }
+            ],
+            to: [{
+              name: patients[i].name,
+              email: patients[i].email
+            }],
+            subject: '[PayDoc] Profitez d\'une annulation chez votre médecin'
+          },
+          function optionalCallback (err) {
+            if (err) return res.json(err);
+            console.log('Broadcast - Mail n°'+i+' sent !');
+          });
+      }
     });
 
     var newAppointment = {
