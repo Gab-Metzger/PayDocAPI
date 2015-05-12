@@ -96,7 +96,6 @@ module.exports = {
     var params = req.params.all();
     var patients = [];
     Appointment.find({where : {doctor: params.doctor, state : {'!': "denied", '!': "blocked"}, start: {'>': params.start}}, sort:'start', limit:500}).populate('patient').populate('doctor').exec(function (err, appoint){
-      console.log(appoint);
       for (var i = 0 ; i < appoint.length; i++){
           if (appoint[i].patient != undefined) {
             var trouve = false;
