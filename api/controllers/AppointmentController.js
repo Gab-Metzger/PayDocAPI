@@ -96,7 +96,17 @@ module.exports = {
     var params = req.params.all();
     var patients = [];
     console.log("Start");
-    Appointment.find({where : {doctor: params.doctor, state : {'!': "denied", '!': "blocked"}, start: {'>': params.start}}, sort:'start', limit:500}).populate('patient').populate('doctor').exec(function (err, appoint){
+    var query = {
+      where : {
+        doctor: params.doctor,
+        state : {'!': "denied", '!': "blocked"},
+        start: {'>': params.start}
+      },
+      sort:'start',
+      limit:600
+    };
+    console.log(query);
+    Appointment.find(query).populate('patient').populate('doctor').exec(function (err, appoint){
       console.log("Found something !");
       for (var i = 0 ; i < appoint.length; i++){
         console.log("Create patient list : " + i);
