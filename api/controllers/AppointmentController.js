@@ -99,17 +99,20 @@ module.exports = {
     var query = {
       where : {
         doctor: params.doctor,
-        state : {'!': "denied", '!': "blocked"},
-        start: {'>': params.start}
+        state : {
+          '!': ['denied', 'blocked']
+        },
+        start: {
+          '>': params.start
+        }
       },
       sort:'start',
-      limit:600
+      limit:500
     };
     console.log(query);
     Appointment.find(query).populate('patient').populate('doctor').exec(function (err, appoint){
       console.log("Found something !");
       for (var i = 0 ; i < appoint.length; i++){
-        console.log("Create patient list : " + i);
           if (appoint[i].patient != undefined) {
             var trouve = false;
             for ( var j = 0 ; j < patients.length; j++){
@@ -123,7 +126,6 @@ module.exports = {
       }
 
       for (var i = 0; i < patients.length; i++) {
-        console.log("About to send mail " + i);
         Email.send({
             template: 'email-proposition-rdv',
             data: [
