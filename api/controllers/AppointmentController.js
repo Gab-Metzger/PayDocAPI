@@ -95,8 +95,11 @@ module.exports = {
   broadcast: function(req, res) {
     var params = req.params.all();
     var patients = [];
+    console.log("Start");
     Appointment.find({where : {doctor: params.doctor, state : {'!': "denied", '!': "blocked"}, start: {'>': params.start}}, sort:'start', limit:500}).populate('patient').populate('doctor').exec(function (err, appoint){
+      console.log("Found something !");
       for (var i = 0 ; i < appoint.length; i++){
+        console.log("Create patient list : " + i);
           if (appoint[i].patient != undefined) {
             var trouve = false;
             for ( var j = 0 ; j < patients.length; j++){
@@ -110,6 +113,7 @@ module.exports = {
       }
 
       for (var i = 0; i < patients.length; i++) {
+        console.log("About to send mail " + i);
         Email.send({
             template: 'email-proposition-rdv',
             data: [
@@ -140,6 +144,7 @@ module.exports = {
     };
 
     Appointment.create(newAppointment).exec(function createCB(err, created) {
+      console.log("Create appointment");
       if (req.isSocket){
         Appointment.find({}).exec(function(e,listOfApp){
           Appointment.subscribe(req.socket,listOfApp);
