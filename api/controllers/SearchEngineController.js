@@ -23,9 +23,7 @@ module.exports = {
     var isAvailable;
     var query = {};
 
-    async.whilst(
-      function () { return (count < range.length || nbrRes < 5); },
-      function (callback) {
+    while (count < range.length) {
       isAvailable = true;
 
       query = {
@@ -39,30 +37,37 @@ module.exports = {
         }
       };
 
-      Appointment.find(query)
-        .exec(function(err, results) {
-          console.log(count);
-          while (moment(range[count].start).isBefore(moment(range[count].end)) && (nbrRes <= 4)) {
-            isAvailable = true;
-            for (var j = 0; j < results.length; j++) {
-              if (moment(range[count].start).isSame(moment(results[j].start))) {
-                isAvailable = false;
+      async.series([
+        function(callback){
+          Appointment.find(query)
+            .exec(function(err, results) {
+              console.log(count);
+              while (moment(range[count].start).isBefore(moment(range[count].end)) || (nbrRes <= 4)) {
+                isAvailable = true;
+                console.log("I'm in");
+                for (var j = 0; j < results.length; j++) {
+                  if (moment(range[count].start).isSame(moment(results[j].start))) {
+                    isAvailable = false;
+                  }
+                }
+                if (isAvailable) {
+                  availableAppointments.push(moment(range[count].start));
+                  nbrRes++;
+                }
+                range[count].start = moment(range[count].start).add(interval,'minutes');
               }
-            }
-            if (isAvailable) {
-              availableAppointments.push(moment(range[count].start));
-              nbrRes++;
-            }
-            range[count].start = moment(range[count].start).add(interval,'minutes');
+              callback()
+            })
+          },
+          function(callback){
+            console.log("Test");
+            count++;
+            callback();
           }
-        })
-        count++;
-      },
-      function (err) {
-        console.log(nbrRes);
-        return res.json(availableAppointments);
-      }
-    );
+        ]);
+    }    
+    console.log(nbrRes);
+    return res.json(availableAppointments);
   },
 
 };
