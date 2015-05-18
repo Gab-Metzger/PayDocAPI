@@ -107,7 +107,7 @@ module.exports = {
         }
       },
       sort:'start',
-      limit:450
+      limit:250
     };
     console.log(query);
     Appointment.find(query).populate('patient').populate('doctor').exec(function (err, appoint){
