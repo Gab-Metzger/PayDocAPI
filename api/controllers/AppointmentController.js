@@ -107,7 +107,7 @@ module.exports = {
         }
       },
       sort:'start',
-      limit:500
+      limit:350
     };
     console.log(query);
     async.waterfall([
