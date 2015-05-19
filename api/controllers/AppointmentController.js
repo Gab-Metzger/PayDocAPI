@@ -107,12 +107,17 @@ module.exports = {
         }
       },
       sort:'start',
-      limit:250
+      limit:500
     };
     console.log(query);
-    Appointment.find(query).populate('patient').populate('doctor').exec(function (err, appoint){
-      console.log("Found something !");
-      for (var i = 0 ; i < appoint.length; i++){
+    async.waterfall([
+      function(callback) {
+        Appointment.find(query).populate('patient').populate('doctor').exec(function (err, appoint) {
+          callback(null, appoint);
+        });
+      },
+      function(appoint, callback) {
+        for (var i = 0 ; i < appoint.length; i++) {
           if (appoint[i].patient != undefined) {
             var trouve = false;
             for ( var j = 0 ; j < patients.length; j++){
@@ -123,48 +128,57 @@ module.exports = {
               patients[patients.length] = appoint[i].patient;
             }
           }
-      }
+        }
+        callback(null, patients);
+      },
+      function(patients, callback) {
+        for (var i = 0; i < patients.length; i++) {
+          Email.send({
+              template: 'email-proposition-rdv',
+              data: [
+                {
+                  "FNAME": patients[i].firstName
+                },
+                {
+                  "DNAME": patients[i].dname
+                }
+              ],
+              to: [{
+                name: patients[i].name,
+                email: patients[i].email
+              }],
+              subject: '[PayDoc] Profitez d\'une annulation chez votre médecin'
+            },
+            function optionalCallback (err) {
+              if (err) return res.json(err);
+              console.log('Broadcast - Mail n°'+i+' sent !');
+            });
+        }
+        callback(null);
+      },
+      function(callback) {
+        var newAppointment = {
+          start: params.start,
+          end: params.end,
+          doctor: params.doctor
+        };
 
-      for (var i = 0; i < patients.length; i++) {
-        Email.send({
-            template: 'email-proposition-rdv',
-            data: [
-              {
-                "FNAME": patients[i].firstName
-              },
-              {
-                "DNAME": patients[i].dname
-              }
-            ],
-            to: [{
-              name: patients[i].name,
-              email: patients[i].email
-            }],
-            subject: '[PayDoc] Profitez d\'une annulation chez votre médecin'
-          },
-          function optionalCallback (err) {
-            if (err) return res.json(err);
-            console.log('Broadcast - Mail n°'+i+' sent !');
-          });
+        Appointment.create(newAppointment).exec(function createCB(err, created) {
+          console.log("Create appointment");
+          if (req.isSocket){
+            Appointment.find({}).exec(function(e,listOfApp){
+              Appointment.subscribe(req.socket,listOfApp);
+            });
+          }
+          if (err) return res.json(err)
+          else {
+            callback(null, created)
+          }
+        })
       }
-    });
-
-    var newAppointment = {
-      start: params.start,
-      end: params.end,
-      doctor: params.doctor
-    };
-
-    Appointment.create(newAppointment).exec(function createCB(err, created) {
-      console.log("Create appointment");
-      if (req.isSocket){
-        Appointment.find({}).exec(function(e,listOfApp){
-          Appointment.subscribe(req.socket,listOfApp);
-        });
-      }
-      if (err) return res.json(err);
+    ], function (err, created) {
       return res.json(created);
-    })
+    });
   },
 
   getBroadcasted : function (req, res ){
