@@ -113,6 +113,7 @@ module.exports = {
     async.waterfall([
       function(callback) {
         Appointment.find(query).populate('patient').populate('doctor').exec(function (err, appoint) {
+          console.log(appoint);
           callback(null, appoint);
         });
       },
@@ -132,7 +133,7 @@ module.exports = {
         callback(null, patients);
       },
       function(patients, callback) {
-        for (var i = 0; i < patients.length; i++) {
+        /*for (var i = 0; i < patients.length; i++) {
           Email.send({
               template: 'email-proposition-rdv',
               data: [
@@ -153,7 +154,7 @@ module.exports = {
               if (err) return res.json(err);
               console.log('Broadcast - Mail n°'+i+' sent !');
             });
-        }
+        }*/
         callback(null);
       },
       function(callback) {
