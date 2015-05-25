@@ -71,6 +71,11 @@ module.exports = {
       required: true
     },
 
+    categories:{
+      collection: 'category',
+      via: 'owner'
+    },
+
     toJSON: function() {
       var obj = this.toObject();
       delete obj.encryptedPassword;
@@ -115,4 +120,3 @@ module.exports = {
     }
   }
 };
-

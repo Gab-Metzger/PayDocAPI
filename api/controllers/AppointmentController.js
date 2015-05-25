@@ -26,7 +26,8 @@ module.exports = {
       state: params.state,
       patient: params.patient,
       doctor: params.doctor,
-      notes: params.notes
+      notes: params.notes,
+      category: params.category
     };
 
     Appointment.create(newAppointment).exec(function createCB(err,created){
@@ -43,7 +44,8 @@ module.exports = {
           end: created.end,
           doctor: appoint.doctor,
           state : appoint.state,
-          notes: appoint.notes
+          notes: appoint.notes,
+          category: appoint.category
         });
 
         if (appoint.patient != undefined) {
@@ -107,7 +109,7 @@ module.exports = {
         }
       },
       sort:'start',
-      limit:500
+      limit:250
     };
     console.log(query);
     async.waterfall([
@@ -134,7 +136,7 @@ module.exports = {
         callback(null, patients);
       },
       function(patients, callback) {
-        /*for (var i = 0; i < patients.length; i++) {
+        for (var i = 0; i < patients.length; i++) {
           Email.send({
               template: 'email-proposition-rdv',
               data: [
@@ -155,7 +157,7 @@ module.exports = {
               if (err) return res.json(err);
               console.log('Broadcast - Mail n°'+i+' sent !');
             });
-        }*/
+        }
         callback(null);
       },
       function(callback) {
