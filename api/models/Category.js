@@ -9,13 +9,17 @@ module.exports = {
 
   attributes: {
     name: {
-      type: string,
+      type: 'string',
       required: true
     },
     color: {
-      type: string,
-      required: true
+      type: 'string',
+      required: true,
       defaultsTo: 'blue'
+    },
+    owner:{
+      model:'doctor',
+      required: true
     }
   }
 };

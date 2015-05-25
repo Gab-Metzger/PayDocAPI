@@ -14,38 +14,38 @@ module.exports = {
       type:'datetime',
       required: true
     },
-
     end: {
       type:'datetime',
       required: true
     },
-
     state: {
       type: 'string',
       enum: ['pending', 'approved', 'denied', 'blocked'],
       defaultsTo: 'pending'
     },
-
     patient:{
       model:'patient'
     },
-
     doctor:{
       model:'doctor',
       required: true
     },
-
     notes: {
       type:'text'
     },
-
     happened: {
       type: 'boolean',
       defaultsTo: false
     },
+    category: {
+      type: 'string'
+    },
 
     toJSON: function() {
       var obj = this.toObject();
+      if (obj.category != null) {
+        obj.color = obj.category
+      }
       switch(obj.state) {
         case 'denied'  :  obj.color = 'red';  break;
       }

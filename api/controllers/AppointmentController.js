@@ -26,7 +26,8 @@ module.exports = {
       state: params.state,
       patient: params.patient,
       doctor: params.doctor,
-      notes: params.notes
+      notes: params.notes,
+      category: params.category
     };
 
     Appointment.create(newAppointment).exec(function createCB(err,created){
@@ -43,7 +44,8 @@ module.exports = {
           end: created.end,
           doctor: appoint.doctor,
           state : appoint.state,
-          notes: appoint.notes
+          notes: appoint.notes,
+          category: appoint.category
         });
 
         if (appoint.patient != undefined) {
