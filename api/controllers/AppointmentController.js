@@ -306,6 +306,44 @@ module.exports = {
       }
 
     })
+  },
+
+  getPendingAppointments: function(req, res) {
+    var appointments = [];
+    var params = req.params.all();
+    var query = {
+      where : {
+        doctor: params.doctor,
+        state : 'pending',
+        start: {
+          '>': new Date(params.start),
+          '<': new Date(params.end)
+        }
+      },
+      sort:'start',
+    };
+    Appointment.find(query).populate('patient').populate('doctor').exec(function(err, data) {
+      if (err)
+        return res.json(err);
+        
+      for (var i = 0; i < data.length; i++) {
+        if (data[i].patient != null) {
+          email = data[i].patient.email;
+          phone = data[i].patient.mobilePhone;
+          if (email.indexOf('paydoc.fr') == -1) {
+            data[i].start = moment(data[i].start).format('LLL');
+            data[i].disabled = false;
+            appointments.push(data[i]);
+          }
+          else if ((email.indexOf('paydoc.fr') > -1) && (phone != null)) {
+            data[i].start = moment(data[i].start).format('LLL');
+            data[i].disabled = true;
+            appointments.push(data[i]);
+          }
+        }
+      }
+      return res.json(appointments);
+    })
   }
 
 };
