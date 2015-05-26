@@ -325,18 +325,18 @@ module.exports = {
     Appointment.find(query).populate('patient').populate('doctor').exec(function(err, data) {
       if (err)
         return res.json(err);
-        
+
       for (var i = 0; i < data.length; i++) {
         if (data[i].patient != null) {
           email = data[i].patient.email;
           phone = data[i].patient.mobilePhone;
           if (email.indexOf('paydoc.fr') == -1) {
-            data[i].start = moment(data[i].start).format('LLL');
+            data[i].start = moment.utc(data[i].start).format('LLL');
             data[i].disabled = false;
             appointments.push(data[i]);
           }
           else if ((email.indexOf('paydoc.fr') > -1) && (phone != null)) {
-            data[i].start = moment(data[i].start).format('LLL');
+            data[i].start = moment.utc(data[i].start).format('LLL');
             data[i].disabled = true;
             appointments.push(data[i]);
           }
