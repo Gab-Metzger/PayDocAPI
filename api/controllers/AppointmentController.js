@@ -331,13 +331,13 @@ module.exports = {
           email = data[i].patient.email;
           phone = data[i].patient.mobilePhone;
           if (email.indexOf('paydoc.fr') == -1) {
-            data[i].start = new Date(data[i].start);
+            data[i].start = new Date(data[i].start).toISOString();
             data[i].start = moment(data[i].start).format('LLL');
             data[i].disabled = false;
             appointments.push(data[i]);
           }
           else if ((email.indexOf('paydoc.fr') > -1) && (phone != null)) {
-            data[i].start = new Date(data[i].start);
+            data[i].start = new Date(data[i].start).toISOString();
             data[i].start = moment(data[i].start).format('LLL');
             data[i].disabled = true;
             appointments.push(data[i]);
