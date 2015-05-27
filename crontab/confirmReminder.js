@@ -58,8 +58,8 @@ module.exports = {
                   template: 'email-pour-rappel-de-rdv-non-confirm',
                   data: mergedVars,
                   to: [{
-                    name: 'PayDoc',
-                    email: 'contact@paydoc.fr'
+                    name: 'KalenDoc',
+                    email: 'contact@kalendoc.com'
                   }],
                   subject: '[PayDoc] Attention votre rendez-vous n\'est pas confirmé'
                 },
