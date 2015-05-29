@@ -15,12 +15,14 @@ module.exports = {
         for (var i = 0; i < data.length; i++) {
           if (data[i].patient != undefined) {
             var name = data[i].patient.lastName.toUpperCase() + ' ' + data[i].patient.firstName;
+            var dateTemplate = moment(data[i].start).format('L');
             var appDate = new Date(data[i].start);
             if (data[i].patient.email.indexOf("paydoc.fr") === -1) {
               if (data[i].patient.mobilePhone != undefined) {
                 var mergedVars = [
                   {"FNAME": data[i].patient.firstName},
                   {"DNAME": data[i].doctor.lastName},
+                  {"DATE": dateTemplate},
                   {"PNAME": name},
                   {"PMOBILE": data[i].patient.mobilePhone}
                 ]
@@ -29,6 +31,7 @@ module.exports = {
                 var mergedVars = [
                   {"FNAME": data[i].patient.firstName},
                   {"DNAME": data[i].doctor.lastName},
+                  {"DATE": dateTemplate},
                   {"PNAME": name}
                 ]
               }
@@ -51,6 +54,7 @@ module.exports = {
                 {"FNAME": data[i].patient.firstName},
                 {"DNAME": data[i].doctor.lastName},
                 {"PNAME": name},
+                {"DATE": dateTemplate},
                 {"PMOBILE": data[i].patient.mobilePhone}
               ];
 

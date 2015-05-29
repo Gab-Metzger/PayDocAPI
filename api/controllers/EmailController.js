@@ -1,13 +1,18 @@
+var moment = require('moment');
+moment.locale('fr');
+
 module.exports = {
   confirm: function(req, res) {
     var app = req.param('app');
     var name = app.patient.lastName.toUpperCase() + ' ' + app.patient.firstName;
     var email = app.disabled ? 'contact@kalendoc.com' : app.patient.email;
+    var dateTemplate = moment(app.start).format('L');
 
     if (app.patient.mobilePhone != undefined) {
       var mergedVars = [
         {"FNAME": app.patient.firstName},
         {"DNAME": app.doctor.lastName},
+        {"DATE": dateTemplate},
         {"PNAME": name},
         {"PMOBILE": app.patient.mobilePhone}
       ]
@@ -16,6 +21,7 @@ module.exports = {
       var mergedVars = [
         {"FNAME": app.patient.firstName},
         {"DNAME": app.doctor.lastName},
+        {"DATE": dateTemplate},
         {"PNAME": name}
       ]
     }
