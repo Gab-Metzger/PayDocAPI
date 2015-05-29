@@ -3,9 +3,10 @@ moment.locale('fr');
 
 module.exports = {
   run : function(){
-    var nowDate = new Date();
-    var minDate = addDays(nowDate,3);
-    var maxDate = addDays(nowDate,4);
+    var minDate = moment().set('hour', 20).add(3, 'd').toDate();
+    var maxDate = moment().set('hour', 20).add(4, 'd').toDate();
+    console.log(minDate);
+    console.log(maxDate);
 
     Appointment.find({state: 'pending', start: {'>=': minDate, '<': maxDate}})
       .populate('patient')
@@ -80,9 +81,3 @@ module.exports = {
     return false;
   }
 };
-
-function addDays(date, days) {
-  var result = new Date(date);
-  result.setDate(date.getDate() + days);
-  return result;
-}
