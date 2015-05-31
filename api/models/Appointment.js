@@ -14,41 +14,39 @@ module.exports = {
       type:'datetime',
       required: true
     },
-
     end: {
       type:'datetime',
       required: true
     },
-
     state: {
       type: 'string',
       enum: ['pending', 'approved', 'denied', 'blocked'],
       defaultsTo: 'pending'
     },
-
     patient:{
       model:'patient'
     },
-
     doctor:{
       model:'doctor',
       required: true
     },
-
     notes: {
       type:'text'
     },
-
     happened: {
       type: 'boolean',
       defaultsTo: false
     },
+    category: {
+      type: 'string'
+    },
 
     toJSON: function() {
       var obj = this.toObject();
+      if (obj.category != null) {
+        obj.color = obj.category
+      }
       switch(obj.state) {
-        case 'pending'   :  obj.color = '#FFFF00';  break;
-        case 'approved':  obj.color = '#2EFE64 ';  break;
         case 'denied'  :  obj.color = 'red';  break;
       }
       if (obj.patient != null) {
@@ -56,13 +54,15 @@ module.exports = {
           obj.title = obj.patient.lastName + ' - arrivé';
         else
           obj.title = obj.patient.lastName;
-        if ((parseInt(obj.patient) !== obj.patient) && (obj.patient.email.indexOf('paydoc.fr') != -1) && (obj.patient.mobilePhone == null)) {
-          obj.color = '#2E64FE';
-        }
       }
       else {
         if (obj.state == 'blocked') {
-          obj.title = "Créneau bloqué";
+          if (obj.notes != null) {
+            obj.title = obj.notes
+          }
+          else {
+            obj.title = "Créneau bloqué";
+          }
           obj.color = '#A89E9E';
         }
         else {
@@ -71,7 +71,6 @@ module.exports = {
         }
 
       }
-      //obj.allDay = false;
       return obj;
     }
   }
