@@ -3,9 +3,10 @@ moment.locale('fr');
 
 module.exports = {
   run : function(){
-    var nowDate = new Date();
-    var minDate = addDays(nowDate,3);
-    var maxDate = addDays(nowDate,4);
+    var minDate = moment().set('hour', 20).add(3, 'd').toDate();
+    var maxDate = moment().set('hour', 20).add(4, 'd').toDate();
+    console.log(minDate);
+    console.log(maxDate);
 
     Appointment.find({state: 'pending', start: {'>=': minDate, '<': maxDate}})
       .populate('patient')
@@ -15,12 +16,14 @@ module.exports = {
         for (var i = 0; i < data.length; i++) {
           if (data[i].patient != undefined) {
             var name = data[i].patient.lastName.toUpperCase() + ' ' + data[i].patient.firstName;
+            var dateTemplate = moment(data[i].start).format('L');
             var appDate = new Date(data[i].start);
             if (data[i].patient.email.indexOf("paydoc.fr") === -1) {
               if (data[i].patient.mobilePhone != undefined) {
                 var mergedVars = [
                   {"FNAME": data[i].patient.firstName},
                   {"DNAME": data[i].doctor.lastName},
+                  {"DATE": dateTemplate},
                   {"PNAME": name},
                   {"PMOBILE": data[i].patient.mobilePhone}
                 ]
@@ -29,6 +32,7 @@ module.exports = {
                 var mergedVars = [
                   {"FNAME": data[i].patient.firstName},
                   {"DNAME": data[i].doctor.lastName},
+                  {"DATE": dateTemplate},
                   {"PNAME": name}
                 ]
               }
@@ -51,6 +55,7 @@ module.exports = {
                 {"FNAME": data[i].patient.firstName},
                 {"DNAME": data[i].doctor.lastName},
                 {"PNAME": name},
+                {"DATE": dateTemplate},
                 {"PMOBILE": data[i].patient.mobilePhone}
               ];
 
@@ -58,8 +63,8 @@ module.exports = {
                   template: 'email-pour-rappel-de-rdv-non-confirm',
                   data: mergedVars,
                   to: [{
-                    name: 'PayDoc',
-                    email: 'contact@paydoc.fr'
+                    name: 'KalenDoc',
+                    email: 'contact@kalendoc.com'
                   }],
                   subject: '[PayDoc] Attention votre rendez-vous n\'est pas confirmé'
                 },
@@ -76,9 +81,3 @@ module.exports = {
     return false;
   }
 };
-
-function addDays(date, days) {
-  var result = new Date(date);
-  result.setDate(date.getDate() + days);
-  return result;
-}

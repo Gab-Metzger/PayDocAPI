@@ -4,8 +4,8 @@ moment.locale('fr');
 module.exports = {
   run : function(){
     var nowDate = new Date();
-    var minDate = addDays(nowDate,2);
-    var maxDate = addDays(nowDate,3);
+    var minDate = addDays(nowDate,1);
+    var maxDate = addDays(nowDate,2);
 
     Appointment.find({state: {'!': 'denied'}, start: {'>=': minDate, '<': maxDate}})
       .populate('patient')
