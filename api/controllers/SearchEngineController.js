@@ -63,7 +63,7 @@ module.exports = {
                 }
               }
               if (isAvailable) {
-                availableAppointments.push(new Date(range[i].start));
+                availableAppointments.push(moment(range[i].start));
                 nbrRes++;
               }
               range[i].start = moment(range[i].start).add(interval,'minutes');
