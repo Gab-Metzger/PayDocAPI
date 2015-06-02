@@ -47,6 +47,7 @@ module.exports = {
                 '<=': new Date(range[i].end).toISOString()
               }
             };
+            console.log(query);
             Appointment
             .find(query)
             .exec(cb)
@@ -65,7 +66,6 @@ module.exports = {
                 }
               }
               if (isAvailable) {
-                console.log(moment(range[i].start).toISOString());
                 availableAppointments.push(moment(range[i].start));
                 nbrRes++;
               }
