@@ -112,16 +112,16 @@ function rangeToDate(days, periods, week) {
 
     switch(intervals[i]) {
       case 'morning':
-      start.set({'hour': 9, 'minute': 0, 'second': 0, 'millisecond': 0});
-      end.set({'hour': 12, 'minute': 0, 'second': 0, 'millisecond': 0});
+      start.set({'hour': 7, 'minute': 0, 'second': 0, 'millisecond': 0});
+      end.set({'hour': 10, 'minute': 0, 'second': 0, 'millisecond': 0});
       break;
       case 'afternoon':
-      start.set({'hour': 14, 'minute': 0, 'second': 0, 'millisecond': 0});
-      end.set({'hour': 17, 'minute': 0, 'second': 0, 'millisecond': 0});
+      start.set({'hour': 12, 'minute': 0, 'second': 0, 'millisecond': 0});
+      end.set({'hour': 15, 'minute': 0, 'second': 0, 'millisecond': 0});
       break;
       case 'evening':
-      start.set({'hour': 17, 'minute': 0, 'second': 0, 'millisecond': 0});
-      end.set({'hour': 20, 'minute': 0, 'second': 0, 'millisecond': 0});
+      start.set({'hour': 15, 'minute': 0, 'second': 0, 'millisecond': 0});
+      end.set({'hour': 18, 'minute': 0, 'second': 0, 'millisecond': 0});
       break;
     }
 
