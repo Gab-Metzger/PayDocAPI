@@ -39,12 +39,12 @@ module.exports = {
             query = {
               doctor: req.param('doctor'),
               start: {
-                '>=': new Date(range[i].start).toISOString(),
-                '<=': new Date(range[i].end).toISOString()
+                '>=': new Date(range[i].start),
+                '<=': new Date(range[i].end)
               },
               end: {
-                '>=': new Date(range[i].start).toISOString(),
-                '<=': new Date(range[i].end).toISOString()
+                '>=': new Date(range[i].start),
+                '<=': new Date(range[i].end)
               }
             };
             console.log(query);
