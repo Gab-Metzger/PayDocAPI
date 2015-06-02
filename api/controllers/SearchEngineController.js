@@ -9,33 +9,6 @@ moment.locale('fr');
 
 module.exports = {
 
-  promises: function(req, res) {
-    var i = 0, j = 0;
-
-    async.whilst(
-      function () { return i < 3; },
-      function (callbacki) {
-        i++;
-        async.whilst(
-          function () { return j < 2; },
-          function (callbackj) {
-            console.log("Complete 2");
-            j++;
-            callbackj();
-          },
-          function (err) {
-            console.log("Complete 3");
-            callbacki();
-          }
-        );
-      },
-      function (err) {
-        // 5 seconds have passed
-        return res.json({i: i, j: j});
-      }
-    );
-  },
-
   search: function(req, res) {
     var range;
     var i = 0;
@@ -111,6 +84,17 @@ module.exports = {
 
 };
 
+function nextDay(day) {
+  var todayWeek = moment().day();
+
+  if (day < todayWeek) {
+    return moment().day(day+7).toISOString();
+  }
+  else {
+    return moment().day(day).toISOString();
+  }
+}
+
 /**
 * `rangeToDate()`
 */
@@ -120,8 +104,8 @@ function rangeToDate(days, periods, week) {
   var result = [];
 
   for(var i=0; i < intervals.length; i++) {
-    var start = moment().add(week, 'w').weekday(daysOfWeek[i]);
-    var end = moment().add(week, 'w').weekday(daysOfWeek[i]);
+    var start = moment(nextDay(daysOfWeek[i])).add(week, 'w');
+    var end = moment(nextDay(daysOfWeek[i])).add(week, 'w');
 
     switch(intervals[i]) {
       case 'morning':
@@ -138,7 +122,7 @@ function rangeToDate(days, periods, week) {
       break;
     }
 
-    result.push({start: start.toDate(), end: end.toDate()});
+    result.push({start: start.toISOString(), end: end.toISOString()});
   }
 
   return result;
