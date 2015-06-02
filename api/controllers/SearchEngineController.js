@@ -127,6 +127,6 @@ function rangeToDate(days, periods, week) {
 
     result.push({start: start.toISOString(), end: end.toISOString()});
   }
-
+  console.log(result);
   return result;
 }
