@@ -52,6 +52,7 @@ module.exports = {
           },
           filter: ['appointments', function (cb, async_data) {
             var results = async_data.appointments;
+            console.log(results);
             while (moment(range[i].start).isBefore(moment(range[i].end)) && (nbrRes <= 4)) {
               isAvailable = true;
               for (var j = 0; j < results.length; j++) {
@@ -63,6 +64,7 @@ module.exports = {
                 }
               }
               if (isAvailable) {
+                console.log(moment(range[i].start).toISOString());
                 availableAppointments.push(moment(range[i].start));
                 nbrRes++;
               }
