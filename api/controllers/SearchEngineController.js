@@ -37,6 +37,7 @@ module.exports = {
           appointments: function(cb) {
             isAvailable = true;
             query = {
+              doctor: req.param('doctor'),
               start: {
                 '>=': new Date(range[i].start).toISOString(),
                 '<=': new Date(range[i].end).toISOString()
