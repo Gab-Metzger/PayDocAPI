@@ -53,7 +53,6 @@ module.exports = {
           var mobile = appoint.patient.mobilePhone;
           var name = appoint.patient.lastName.toUpperCase() + ' ' + appoint.patient.firstName;
           if (email.indexOf("paydoc.fr") === -1) {
-            appoint.start = new Date(appoint.start);
             if (mobile != undefined) {
               var mergedVars = [
                 {"FNAME": appoint.patient.firstName},
