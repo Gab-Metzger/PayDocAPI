@@ -53,6 +53,7 @@ module.exports = {
           var mobile = appoint.patient.mobilePhone;
           var name = appoint.patient.lastName.toUpperCase() + ' ' + appoint.patient.firstName;
           if (email.indexOf("paydoc.fr") === -1) {
+            appoint.start = new Date(appoint.start);
             if (mobile != undefined) {
               var mergedVars = [
                 {"FNAME": appoint.patient.firstName},
@@ -358,13 +359,11 @@ module.exports = {
           if (err) return res.json(500, {success: false, message: "Bad Request"})
           if (!app) return res.json(401, {success: false, message: "This appointment doesn't exist"})
           if (params.action == 'confirm') {
-            console.log("About to confirm")
             app.state = 'approved';
             app.save();
             return res.send("Votre rendez-vous à bien été confirmé");
           }
           else if (params.action == 'cancel') {
-            console.log("About to cancel")
             app.state = 'denied';
             app.save()
             return res.send("Votre rendez-vous à bien été annulé");
