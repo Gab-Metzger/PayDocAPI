@@ -39,8 +39,8 @@ module.exports = {
             query = {
               doctor: req.param('doctor'),
               start: {
-                '>=': new Date(range[i].start),
-                '<=': new Date(range[i].end)
+                '>=': moment(range[i].start).startOf('day').toISOString(),
+                '<=': moment(range[i].start).endOf('day').toISOString()
               },
               end: {
                 '>=': new Date(range[i].start),
@@ -127,6 +127,5 @@ function rangeToDate(days, periods, week) {
 
     result.push({start: start.toISOString(), end: end.toISOString()});
   }
-  console.log(result);
   return result;
 }

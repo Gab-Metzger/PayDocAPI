@@ -57,6 +57,8 @@ module.exports = {
               var mergedVars = [
                 {"FNAME": appoint.patient.firstName},
                 {"DNAME": appoint.doctor.lastName},
+                {"DATERDV": moment(appoint.start).format('LLL')},
+                {"PID": appoint.id},
                 {"PNAME": name},
                 {"PMOBILE": appoint.patient.mobilePhone}
               ]
@@ -65,11 +67,13 @@ module.exports = {
               var mergedVars = [
                 {"FNAME": appoint.patient.firstName},
                 {"DNAME": appoint.doctor.lastName},
+                {"DATERDV": moment(appoint.start).format('LLL')},
+                {"PID": appoint.id},
                 {"PNAME": name}
               ]
             }
             Email.send({
-                template: 'email-validation-d-un-rdv-paydoc',
+                template: 'email-confirmation-annulation',
                 data: mergedVars,
                 to: [{
                   name: name,
@@ -344,6 +348,35 @@ module.exports = {
       }
       return res.json(appointments);
     })
+  },
+
+  actionByEmail: function(req, res) {
+    var params = req.params.all();
+    if (params.action && params.id) {
+      Appointment.findOneById(params.id)
+        .exec(function(err, app) {
+          if (err) return res.json(500, {success: false, message: "Bad Request"})
+          if (!app) return res.json(401, {success: false, message: "This appointment doesn't exist"})
+          if (params.action == 'confirm') {
+            console.log("About to confirm")
+            app.state = 'approved';
+            app.save();
+            return res.send("Votre rendez-vous à bien été confirmé");
+          }
+          else if (params.action == 'cancel') {
+            console.log("About to cancel")
+            app.state = 'denied';
+            app.save()
+            return res.send("Votre rendez-vous à bien été annulé");
+          }
+          else {
+            return res.json(400, {success: false, message: "Wrong action"});
+          }
+        })
+    }
+    else {
+      return res.json(400, {success: false, message: "Wrong params"})
+    }
   }
 
 };
