@@ -58,7 +58,7 @@ module.exports = {
               var mergedVars = [
                 {"FNAME": appoint.patient.firstName},
                 {"DNAME": appoint.doctor.lastName},
-                {"DATERDV": moment(appoint.start).format('LLL')},
+                {"DATERDV": moment(appoint.start).format('L')},
                 {"PID": appoint.id},
                 {"PNAME": name},
                 {"PMOBILE": appoint.patient.mobilePhone}
@@ -68,7 +68,7 @@ module.exports = {
               var mergedVars = [
                 {"FNAME": appoint.patient.firstName},
                 {"DNAME": appoint.doctor.lastName},
-                {"DATERDV": moment(appoint.start).format('LLL')},
+                {"DATERDV": moment(appoint.start).format('L')},
                 {"PID": appoint.id},
                 {"PNAME": name}
               ]
