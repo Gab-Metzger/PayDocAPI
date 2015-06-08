@@ -12,7 +12,7 @@ module.exports = {
       var mergedVars = [
         {"FNAME": app.patient.firstName},
         {"DNAME": app.doctor.lastName},
-        {"DATE": dateTemplate},
+        {"DATERDV": dateTemplate},
         {"PID": app.id},
         {"PNAME": name},
         {"PMOBILE": app.patient.mobilePhone}
@@ -22,7 +22,7 @@ module.exports = {
       var mergedVars = [
         {"FNAME": app.patient.firstName},
         {"DNAME": app.doctor.lastName},
-        {"DATE": dateTemplate},
+        {"DATERDV": dateTemplate},
         {"PID": app.id},
         {"PNAME": name}
       ]

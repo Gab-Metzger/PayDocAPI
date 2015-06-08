@@ -21,7 +21,7 @@ module.exports = {
                 var mergedVars = [
                   {"FNAME": data[i].patient.firstName},
                   {"DNAME": data[i].doctor.lastName},
-                  {"DATE": dateTemplate},
+                  {"DATERDV": dateTemplate},
                   {"PID": data[i].id},
                   {"PNAME": name},
                   {"PMOBILE": data[i].patient.mobilePhone}
@@ -31,7 +31,7 @@ module.exports = {
                 var mergedVars = [
                   {"FNAME": data[i].patient.firstName},
                   {"DNAME": data[i].doctor.lastName},
-                  {"DATE": dateTemplate},
+                  {"DATERDV": dateTemplate},
                   {"PID": data[i].id},
                   {"PNAME": name}
                 ]
