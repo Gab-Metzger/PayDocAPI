@@ -132,6 +132,7 @@ module.exports = {
             }
             if ( !trouve && (appoint[i].patient.receiveBroadcast) && (appoint[i].patient.email.indexOf("paydoc.fr") === -1)) {
               appoint[i].patient.dname = appoint[i].doctor.lastName;
+              appoint[i].patient.start = appoint[i].start;
               patients[patients.length] = appoint[i].patient;
             }
           }
@@ -149,6 +150,9 @@ module.exports = {
                 },
                 {
                   "DNAME": patients[i].dname
+                },
+                {
+                  "DATERDV": moment(patients[i].start).format('L')
                 }
               ],
               to: [{
@@ -278,8 +282,6 @@ module.exports = {
 
   cancel: function(req, res) {
     Appointment.findOne({id : req.param('id')}).populate('patient').populate('doctor').exec(function(err, app) {
-      var appDate = new Date(app.start);
-
       if ((app.patient != undefined) && (app.patient.email.indexOf("paydoc.fr") === -1)) {
         Email.send({
             template: 'email-annulation-rdv',
@@ -291,7 +293,7 @@ module.exports = {
                 "DNAME": app.doctor.lastName
               },
               {
-                "RDVDATE": moment(appDate).format('LL')
+                "RDVDATE": moment(app.start).format('L')
               }
             ],
             to: [{

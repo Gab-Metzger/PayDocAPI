@@ -97,7 +97,7 @@ module.exports = {
         // Send the mail with url + param token
 
         Email.send({
-          template: 'email-mot-de-passe-oubli',
+          template: 'email-password-forgotten',
           data: [{
             'FNAME': user.firstName
           },
