@@ -22,6 +22,7 @@ module.exports = {
                   {"FNAME": data[i].patient.firstName},
                   {"DATERDV": moment(appDate).format('LL')},
                   {"DNAME": data[i].doctor.lastName},
+                  {"PID": data[i].id},
                   {"PNAME": name},
                   {"PMOBILE": data[i].patient.mobilePhone}
                 ]
@@ -31,11 +32,12 @@ module.exports = {
                   {"FNAME": data[i].patient.firstName},
                   {"DATERDV": moment(appDate).format('LL')},
                   {"DNAME": data[i].doctor.lastName},
+                  {"PID": data[i].id},
                   {"PNAME": name}
                 ]
               }
               Email.send({
-                  template: 'email-rappel-du-rendez-vous',
+                  template: 'email-rappel-rdv',
                   data: mergedVars,
                   to: [{
                     name: name,

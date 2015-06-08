@@ -51,7 +51,7 @@ module.exports = {
           ]
         }
         Email.send({
-          template: 'email-la-cr-ation-du-compte-paydoc',
+          template: 'email-creation-compte',
           data: mergedVars,
           to: [{
             name: name,

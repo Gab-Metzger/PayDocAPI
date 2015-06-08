@@ -5,8 +5,6 @@ module.exports = {
   run : function(){
     var minDate = moment().set('hour', 20).add(3, 'd').toDate();
     var maxDate = moment().set('hour', 20).add(4, 'd').toDate();
-    console.log(minDate);
-    console.log(maxDate);
 
     Appointment.find({state: 'pending', start: {'>=': minDate, '<': maxDate}})
       .populate('patient')
@@ -37,7 +35,7 @@ module.exports = {
                 ]
               }
               Email.send({
-                  template: 'email-pour-rappel-de-rdv-non-confirm',
+                  template: 'email-rappel-confirmation-annulation',
                   data: mergedVars,
                   to: [{
                     name: name,
@@ -60,7 +58,7 @@ module.exports = {
               ];
 
               Email.send({
-                  template: 'email-pour-rappel-de-rdv-non-confirm',
+                  template: 'email-rappel-confirmation-annulation',
                   data: mergedVars,
                   to: [{
                     name: 'KalenDoc',
