@@ -13,6 +13,7 @@ module.exports = {
         {"FNAME": app.patient.firstName},
         {"DNAME": app.doctor.lastName},
         {"DATE": dateTemplate},
+        {"PID": app.id},
         {"PNAME": name},
         {"PMOBILE": app.patient.mobilePhone}
       ]
@@ -22,6 +23,7 @@ module.exports = {
         {"FNAME": app.patient.firstName},
         {"DNAME": app.doctor.lastName},
         {"DATE": dateTemplate},
+        {"PID": app.id},
         {"PNAME": name}
       ]
     }
@@ -29,7 +31,7 @@ module.exports = {
     name = app.disabled ? 'KalenDoc' : (app.patient.lastName.toUpperCase() + ' ' + app.patient.firstName);
 
     Email.send({
-        template: 'email-pour-rappel-de-rdv-non-confirm',
+        template: 'email-rappel-confirmation-annulation',
         data: mergedVars,
         to: [{
           name: name,

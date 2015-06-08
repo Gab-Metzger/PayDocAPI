@@ -22,6 +22,7 @@ module.exports = {
                   {"FNAME": data[i].patient.firstName},
                   {"DNAME": data[i].doctor.lastName},
                   {"DATE": dateTemplate},
+                  {"PID": data[i].id},
                   {"PNAME": name},
                   {"PMOBILE": data[i].patient.mobilePhone}
                 ]
@@ -31,6 +32,7 @@ module.exports = {
                   {"FNAME": data[i].patient.firstName},
                   {"DNAME": data[i].doctor.lastName},
                   {"DATE": dateTemplate},
+                  {"PID": data[i].id},
                   {"PNAME": name}
                 ]
               }
@@ -52,8 +54,9 @@ module.exports = {
               var mergedVars = [
                 {"FNAME": data[i].patient.firstName},
                 {"DNAME": data[i].doctor.lastName},
-                {"PNAME": name},
                 {"DATE": dateTemplate},
+                {"PID": data[i].id},
+                {"PNAME": name},
                 {"PMOBILE": data[i].patient.mobilePhone}
               ];
 
