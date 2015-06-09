@@ -20,8 +20,8 @@ module.exports = {
               if (data[i].patient.mobilePhone != undefined) {
                 var mergedVars = [
                   {"FNAME": data[i].patient.firstName},
-                  {"DATERDV": moment(appDate).format('LL')},
                   {"DNAME": data[i].doctor.lastName},
+                  {"DATERDV": moment(appDate).format('LL')},
                   {"PID": data[i].id},
                   {"PNAME": name},
                   {"PMOBILE": data[i].patient.mobilePhone}
@@ -30,8 +30,8 @@ module.exports = {
               else {
                 var mergedVars = [
                   {"FNAME": data[i].patient.firstName},
-                  {"DATERDV": moment(appDate).format('LL')},
                   {"DNAME": data[i].doctor.lastName},
+                  {"DATERDV": moment(appDate).format('LL')},
                   {"PID": data[i].id},
                   {"PNAME": name}
                 ]
