@@ -41,10 +41,6 @@ module.exports = {
               start: {
                 '>=': moment(range[i].start).startOf('day').toISOString(),
                 '<=': moment(range[i].start).endOf('day').toISOString()
-              },
-              end: {
-                '>=': new Date(range[i].start),
-                '<=': new Date(range[i].end)
               }
             };
             console.log(query);
@@ -121,7 +117,7 @@ function rangeToDate(days, periods, week) {
       break;
       case 'evening':
       start.set({'hour': 15, 'minute': 0, 'second': 0, 'millisecond': 0});
-      end.set({'hour': 18, 'minute': 0, 'second': 0, 'millisecond': 0});
+      end.set({'hour': 17, 'minute': 0, 'second': 0, 'millisecond': 0});
       break;
     }
 
